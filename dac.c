@@ -33,5 +33,5 @@ void DAC_Init(void){
 // Input: 6-bit data, 0 to 63
 // Output: none
 void DAC_Out(uint8_t data){
-    GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R & 0xFFC0) |data;
+    GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R & 0xFFC0) | data;
 }

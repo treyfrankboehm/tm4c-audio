@@ -25,13 +25,16 @@ void EnableInterrupts(void);  // Enable interrupts
 
 int main(void){
     uint8_t data = 0;
+    uint32_t i;
     TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);    // bus clock at 80 MHz
     Piano_Init();
     Sound_Init(0);
     // other initialization
     EnableInterrupts();
-    while(1){ 
-        DAC_Out(1);
+    while(1){
+        DAC_Out(data);
+        data = 0x03F & (data+1);
+        for (i = 0; i < 465; i++) ;
     }
 }
 
