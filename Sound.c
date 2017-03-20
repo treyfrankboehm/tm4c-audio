@@ -24,7 +24,7 @@
 //           Minimum to be determined by YOU
 // Output: none
 void Sound_Init(uint32_t period){
-  
+    DAC_Init();
 }
 
 

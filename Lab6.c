@@ -16,20 +16,23 @@
 #include "Sound.h"
 #include "Piano.h"
 #include "TExaS.h"
+#include "dac.h"
 
 // basic functions defined at end of startup.s
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
 
-int main(void){      
-  TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);    // bus clock at 80 MHz
-  Piano_Init();
-  Sound_Init(0);
-  // other initialization
-  EnableInterrupts();
-  while(1){ 
-  }    
+int main(void){
+    uint8_t data = 0;
+    TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);    // bus clock at 80 MHz
+    Piano_Init();
+    Sound_Init(0);
+    // other initialization
+    EnableInterrupts();
+    while(1){ 
+        DAC_Out(1);
+    }
 }
 
 

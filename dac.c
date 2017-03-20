@@ -19,12 +19,19 @@
 // Input: none
 // Output: none
 void DAC_Init(void){
-
+    uint8_t i;
+    SYSCTL_RCGC2_R |= 0x02;
+    for (i = 0; i < 4; i++) ; // Wait for clock to stabilize
+    GPIO_PORTB_LOCK_R = GPIO_LOCK_KEY;
+    GPIO_PORTB_DIR_R |= 0x3F;
+    GPIO_PORTB_DEN_R |= 0x3F;
+    GPIO_PORTB_DATA_R &= ~0x3F; // Start with no sound
 }
 
 // **************DAC_Out*********************
 // output to DAC
-// Input: 4-bit data, 0 to 15 
+// Input: 6-bit data, 0 to 63
 // Output: none
-void DAC_Out(uint32_t data){
+void DAC_Out(uint8_t data){
+    GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R & 0xFFC0) |data;
 }
