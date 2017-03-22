@@ -18,7 +18,14 @@
 // Initialize piano key inputs, called once 
 // Input: none 
 // Output: none
-void Piano_Init(void){ }
+void Piano_Init(void){
+    uint8_t i;
+    SYSCTL_RCGC2_R |= 0x010;
+    for (i = 0; i < 4; i++) ; // Wait for clock to stabilize
+    GPIO_PORTE_LOCK_R = GPIO_LOCK_KEY;
+    GPIO_PORTE_DIR_R &= ~0x07;
+    GPIO_PORTE_DEN_R |= 0x07;
+}
 
 // **************Piano_In*********************
 // Input from piano key inputs 
@@ -26,5 +33,5 @@ void Piano_Init(void){ }
 // Output: 0 to 7 depending on keys
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
 uint32_t Piano_In(void){
-    return 0; // Replace with your code
+    return (GPIO_PORTE_DATA_R & 0x07);
 }
