@@ -26,6 +26,7 @@
 #include "tm4c123gh6pm.h"
 #include "SysTickInts.h"
 #include "Piano.h"
+#include "midi-stuff/mirrors-midi.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
@@ -56,12 +57,32 @@ void SysTick_Init(uint32_t period) {
     EndCritical(sr);
 }
 
+volatile int eventIndex = 0;
+volatile int durationCount = 0;
+
 void SysTick_Handler(void) {
+    
+    // This is the song!!!
+    int pitch = mirrors_midi[eventIndex].pitch;
+    int duration = mirrors_midi[eventIndex].duration;
+    if (durationCount < duration*TEMPO/(5*pitch)) {
+        Sound_Play(pitch);
+        durationCount++;
+    } else {
+        eventIndex++;
+        if (eventIndex >= 539)
+            eventIndex = 0;
+        durationCount = 0;
+    }
+    
+    /*
+    // Button handler!!!
     volatile int buttons = Piano_In();
     extern unsigned int pianoNotes[];
     if (buttons) {
         Sound_Play(pianoNotes[buttons]); // Get the note specified in Piano.c
     }
-    //Sound_Play(Aes4);
+    */
+    
     // SysTick automatically acknowledges the ISR completion
 }

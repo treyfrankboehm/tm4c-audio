@@ -13,6 +13,7 @@
 // Valvano's spreadsheet: Period = 80,000,000/64/Freq = 1,250,000/Freq
 // Each macro includes the pitch, a possible modifier, and the standard
 // octave designation. "is" indicates "sharp" and "es" indicates "flat"
+#define REST    4444   // Musical silence is an exception
 #define C7      597    // 2093 Hz
 #define B6      633    // 1975.5 Hz
 #define Bes6    670    // 1864.7 Hz

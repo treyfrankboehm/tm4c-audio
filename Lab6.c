@@ -19,8 +19,6 @@
 #include "dac.h"
 #include "SysTickInts.h"
 
-#define TEMPO 84
-
 // basic functions defined at end of startup.s
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -30,7 +28,6 @@ const unsigned int songNotes[] = {
 };
 
 int main(void){
-    //int i, j;
     TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
     Piano_Init();
     Sound_Init(A4);
