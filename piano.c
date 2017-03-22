@@ -19,11 +19,11 @@
 // The three pitches activated by the button presses
 unsigned int pianoNotes[] = {
     0,  // 0x0: If no buttons, play no sound
-    C4, // 0x1: Button 1
+    Ees4, // 0x1: Button 1
     D4, // 0x2: Button 2
     0,  // 0x3: Nothing
-    E4, // 0x4: Button 3
-    0,  // 0x5: Nothing
+    C4, // 0x4: Button 3
+    B3,  // 0x5: Nothing
     0,  // 0x6: Nothing
     0,  // 0x7: Nothing
 };

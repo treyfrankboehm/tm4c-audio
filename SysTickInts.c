@@ -26,7 +26,9 @@
 #include "tm4c123gh6pm.h"
 #include "SysTickInts.h"
 #include "Piano.h"
-#include "midi-stuff/mirrors-midi.h"
+#include "Sound.h"
+#include "dac.h"
+//#include "midi-stuff/mirrors-midi.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
@@ -63,6 +65,7 @@ volatile int durationCount = 0;
 void SysTick_Handler(void) {
     
     // This is the song!!!
+    /*
     int pitch = mirrors_midi[eventIndex].pitch;
     int duration = mirrors_midi[eventIndex].duration;
     if (durationCount < duration*TEMPO/(5*pitch)) {
@@ -74,15 +77,18 @@ void SysTick_Handler(void) {
             eventIndex = 0;
         durationCount = 0;
     }
+    */
     
-    /*
     // Button handler!!!
     volatile int buttons = Piano_In();
+    extern volatile uint8_t wavePointer;
+    extern unsigned short wave[];
     extern unsigned int pianoNotes[];
     if (buttons) {
         Sound_Play(pianoNotes[buttons]); // Get the note specified in Piano.c
+        wavePointer = (wavePointer + 1) & 0x3F;
     }
-    */
+    DAC_Out(wave[wavePointer]);
     
     // SysTick automatically acknowledges the ISR completion
 }

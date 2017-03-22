@@ -18,7 +18,7 @@
 #include "Sound.h"
 
 // Pointer to the next voltage level in the sine wave to output
-volatile uint8_t wavePointer;
+volatile uint8_t wavePointer = 0;
 
 // 6-bit 64-element sine wave, copy/pasted from Valvano's spreadsheet
 const unsigned short wave[64] = {
@@ -57,14 +57,13 @@ void Sound_Init(uint32_t period){
 //         input of zero disable sound output
 // Output: none
 void Sound_Play(uint32_t period) {
-    if (period != REST) {
-        DAC_Out(wave[wavePointer]);
-        wavePointer = (wavePointer + 1) & 0x3F;
-        NVIC_ST_RELOAD_R = period-1;
-        NVIC_ST_CURRENT_R = 0;
-    } else {
-        DAC_Out(0);
+    /*if (period == REST || period == 0) {
         NVIC_ST_RELOAD_R = REST-1;
         NVIC_ST_CURRENT_R = 0;
-    }
+    } else {
+        NVIC_ST_RELOAD_R = period-1;
+        NVIC_ST_CURRENT_R = 0;
+    }*/
+    NVIC_ST_RELOAD_R = period-1;
+    NVIC_ST_CURRENT_R = 0;
 }
