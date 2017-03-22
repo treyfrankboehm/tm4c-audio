@@ -4,7 +4,7 @@
 // MOOC lab 13 or EE319K lab6 starter
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-19
+// Last Modified: 2017-03-21
 // Lab number: 6
 // Hardware connections
 //     PB0 through PB5: DAC output bits
@@ -17,6 +17,7 @@
 #include "Piano.h"
 #include "TExaS.h"
 #include "dac.h"
+#include "SysTickInts.h"
 
 #define TEMPO 84
 
@@ -29,20 +30,23 @@ const unsigned int songNotes[] = {
 };
 
 int main(void){
-    int i, j;
-    TExaS_Init(SW_PIN_PE3210,DAC_PIN_PB3210,ScopeOn);    // bus clock at 80 MHz
-    DAC_Init();
+    //int i, j;
+    TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
     Piano_Init();
-    Sound_Init(0);
+    Sound_Init(1023);
     // other initialization
     EnableInterrupts();
-    while(1){
+    while (1) {
+        GPIO_PORTE_DATA_R &= ~0x07;
+    }
+    /*
         for (i = 0; i < sizeof(songNotes)/sizeof(int); i++) {
             for (j = 0; j < (18000000/(songNotes[i]*TEMPO)); j++) {
                 Sound_Play(songNotes[i]);
             }
         }
     }
+    */
 }
 
 

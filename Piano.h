@@ -7,8 +7,10 @@
 // Lab number: 6
 // Hardware connections
 #include <stdint.h>
+#include "Sound.h"
 // Header files contain the prototypes for public functions
 // this file explains what the module does
+
 
 // **************Piano_Init*********************
 // Initialize piano key inputs, called once 

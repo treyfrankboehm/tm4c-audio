@@ -3,7 +3,7 @@
 // Runs on LM4F120 or TM4C123
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-19
+// Last Modified: 2017-03-21
 // Lab number: 6
 // Hardware connections
 //     PB0 through PB5: DAC output bits
@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include "dac.h"
 #include "tm4c123gh6pm.h"
+#include "SysTickInts.h"
 
 // 6-bit 64-element sine wave, copy/pasted from Valvano's spreadsheet
 const unsigned short wave[64] = {
@@ -33,12 +34,9 @@ const unsigned short wave[64] = {
 //           Minimum to be determined by YOU
 // Output: none
 void Sound_Init(uint32_t period){
-    NVIC_ST_CTRL_R &= ~0x05;
-    NVIC_ST_RELOAD_R = 0x00FFFFFF;
-    NVIC_ST_CURRENT_R = 0x0;
-    NVIC_ST_CTRL_R |= 0x05;
+    SysTick_Init(period);
+    DAC_Init();
 }
-
 
 // **************Sound_Play*********************
 // Start sound output, and set Systick interrupt period 
@@ -49,7 +47,9 @@ void Sound_Init(uint32_t period){
 //         input of zero disable sound output
 // Output: none
 void Sound_Play(uint32_t period){
-    int i;
+    static int i = 0;
+    DAC_Out(wave[i]);
+    
     for (i = 0; i < 64; i++) {
         DAC_Out(wave[i]);
         NVIC_ST_CURRENT_R = 0x00FFFFFF;
