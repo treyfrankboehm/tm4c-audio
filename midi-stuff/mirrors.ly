@@ -112,7 +112,7 @@ Alto = \transpose ees c { \relative c'' {
 }
 
 \book {
-	\bookOutputSuffix "midi"
+    \bookOutputSuffix "midi"
 	\score {
 		<<
             << \transpose c ees, {\Alto} >>
