@@ -112,7 +112,8 @@ Alto = \transpose ees c { \relative c'' {
 }
 
 \book {
-    \bookOutputSuffix "midi"
+    %\bookOutputSuffix "midi"
+    \bookOutputName "mirrors_midi"
 	\score {
 		<<
             << \transpose c ees, {\Alto} >>

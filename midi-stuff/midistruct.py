@@ -3,6 +3,7 @@
 import csv
 import os
 import sys
+import re
 
 try:
     filename = sys.argv[1][0:-5]
@@ -15,11 +16,13 @@ macroNums=["REST", "Cis0", "D0", "Dis0", "E0", "F0", "Fis0", "G0", "Gis0", "A0",
 
 os.system("midicsv %s.midi > %s.csv" % (filename, filename))
 
-# Remove all the extra spaces after commas
-os.system("cat %s.csv | sed -e 's/,\ /,/g' > %s.tmp; mv %s.tmp %s.csv" %
-        (filename, filename, filename, filename))
-
 midiCSV = list(csv.reader(open("%s.csv" % filename)))
+
+# Remove extra spaces after commas
+for row in midiCSV:
+    for item in range(len(row)):
+        row[item] = re.sub(' ', '', row[item])
+
 # Find the tempo
 tempo = 0
 for row in midiCSV:
@@ -63,21 +66,27 @@ for i in range(0,len(midiCSV)-1,2):
         if rest:
             mStruct.append([macroNums[0], rest])
 
+head = "\
+/* %.h: .midi -> .csv -> homemade C struct\n\
+ * Copyright (c) 2017 Trey Boehm\n\
+ * Include this file in Sound.c to make the note macros useful.\n\
+ */\n\
+\n\
+struct song_struct {\n\
+    uint32_t pitch;\n\
+    uint32_t duration;\n\
+};\n\
+typedef struct song_struct song_t;\n\
+\n\
+const song_t %s[] = {\n\
+"
 f = open("%s.h" % filename, 'w')
-f.write("/*\n")
-f.write(" * %s.h: .midi -> .csv -> homemade C struct\n" % filename)
-f.write(" * This file must be included by Sound.c, which holds the\n")
-f.write(" * note macro declarations.\n")
-f.write(" */\n")
-f.write("\nconst uint32_t TEMPO = %d\n\n" % tempo)
-f.write("const song_t %s[] = {\n" % filename)
+f.write(head)
 for i in range(len(mStruct)):
     f.write("\t{%s, %d}" % (mStruct[i][0], mStruct[i][1]))
-    if i != len(mStruct)-1:
-        f.write(",\n")
-    else:
-        f.write("\n")
-f.write("};\n")
+    f.write(",\n")
+f.write("\t{0, 0}\n")
+f.write("\n};\n")
 f.close()
 
 # vim: set colorcolumn=72:
