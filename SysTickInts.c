@@ -26,7 +26,6 @@
 #include "tm4c123gh6pm.h"
 #include "SysTickInts.h"
 #include "Piano.h"
-//#include "Sound.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
@@ -51,15 +50,18 @@ void SysTick_Init(uint32_t period) {
     NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
     NVIC_ST_RELOAD_R = period-1;// reload value
     NVIC_ST_CURRENT_R = 0;      // any write to current clears it
-    NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF)|0x40000000; // priority 2
+    NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R & 0x00FFFFFF) | 0x40000000; // priority 2
                                 // enable SysTick with core clock and interrupts
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
     EndCritical(sr);
 }
 
 void SysTick_Handler(void) {
-    int buttons = Piano_In();
+    volatile int buttons = Piano_In();
+    extern unsigned int pianoNotes[];
     if (buttons) {
         Sound_Play(pianoNotes[buttons]); // Get the note specified in Piano.c
     }
+    //Sound_Play(Aes4);
+    // SysTick automatically acknowledges the ISR completion
 }

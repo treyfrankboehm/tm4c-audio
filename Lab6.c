@@ -33,20 +33,12 @@ int main(void){
     //int i, j;
     TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
     Piano_Init();
-    Sound_Init(1023);
+    Sound_Init(A4);
     // other initialization
     EnableInterrupts();
     while (1) {
-        GPIO_PORTE_DATA_R &= ~0x07;
+        // Infinite loop. SysTick_Handler is called periodically.
     }
-    /*
-        for (i = 0; i < sizeof(songNotes)/sizeof(int); i++) {
-            for (j = 0; j < (18000000/(songNotes[i]*TEMPO)); j++) {
-                Sound_Play(songNotes[i]);
-            }
-        }
-    }
-    */
 }
 
 

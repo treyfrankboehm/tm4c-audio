@@ -16,6 +16,9 @@
 #include "tm4c123gh6pm.h"
 #include "SysTickInts.h"
 
+// Pointer to the next voltage level in the sine wave to output
+volatile uint8_t wavePointer;
+
 // 6-bit 64-element sine wave, copy/pasted from Valvano's spreadsheet
 const unsigned short wave[64] = {
     32,35,38,41,44,47,49,52,54,56,58,59,
@@ -47,15 +50,11 @@ void Sound_Init(uint32_t period){
 //         input of zero disable sound output
 // Output: none
 void Sound_Play(uint32_t period){
-    static int i = 0;
-    DAC_Out(wave[i]);
-    
-    for (i = 0; i < 64; i++) {
-        DAC_Out(wave[i]);
-        NVIC_ST_CURRENT_R = 0x00FFFFFF;
-        while (NVIC_ST_RELOAD_R - NVIC_ST_CURRENT_R < period) {
-            ;
-        }
+    if (period) {
+        DAC_Out(wave[wavePointer]);
     }
+    wavePointer = (wavePointer + 1) & 0x3F;
+    NVIC_ST_RELOAD_R = period-1;
+    NVIC_ST_CURRENT_R = 0;
 }
 
