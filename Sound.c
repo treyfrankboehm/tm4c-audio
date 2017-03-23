@@ -63,17 +63,3 @@ void Sound_Play(uint32_t period) {
     NVIC_ST_CURRENT_R = 0;
 }
 
-void Sequencer_Init(void) {
-    uint8_t i;
-    SYSCTL_RCGC2_R |= 0x020;
-    for (i = 0; i < 4; i++) ; // Wait for clock to stabilize
-    GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;
-    GPIO_PORTF_CR_R |= 0x11;
-    GPIO_PORTF_PUR_R |= 0x11;
-    GPIO_PORTF_DIR_R &= ~0x11;
-    GPIO_PORTF_DEN_R |= 0x11;
-}
-
-uint8_t Sequencer_In(void) {
-    return (GPIO_PORTF_DATA_R & 0x11);
-}

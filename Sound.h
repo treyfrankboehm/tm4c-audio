@@ -103,8 +103,3 @@ void Sound_Init(uint32_t period);
 //         input of zero disable sound output
 // Output: none
 void Sound_Play(uint32_t period);
-
-// Initialize buttons to start/stop song
-void Sequencer_Init(void);
-
-uint8_t Sequencer_In(void);
