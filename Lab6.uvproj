@@ -440,11 +440,6 @@
               <FileType>5</FileType>
               <FilePath>.\SysTickInts.h</FilePath>
             </File>
-            <File>
-              <FileName>mirrors-midi.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\midi-stuff\mirrors-midi.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

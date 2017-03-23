@@ -1,21 +1,23 @@
 // Sound.c
-// This module contains the SysTick ISR that plays sound
+// This module contains the SysTick ISR that plays sound. Also
+//     initializes the sequencer (port F buttons) and defines the song
+//     data in an array of structs.
 // Runs on LM4F120 or TM4C123
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-21
+// Last Modified: 2017-03-23
 // Lab number: 6
 // Hardware connections
 //     PB0 through PB5: DAC output bits
 //     PE0 through PE2: Synthesizer button inputs
+//     PF0 and PF4: On-board start/stop buttons
 
 // Code files contain the actual implemenation for public functions
 // this file also contains an private functions and private data
 #include <stdint.h>
 #include "dac.h"
-#include "tm4c123gh6pm.h"
 #include "SysTickInts.h"
-#include "Sound.h"
+#include "tm4c123gh6pm.h"
 
 // Pointer to the next voltage level in the sine wave to output
 volatile uint8_t wavePointer = 0;
@@ -57,13 +59,21 @@ void Sound_Init(uint32_t period){
 //         input of zero disable sound output
 // Output: none
 void Sound_Play(uint32_t period) {
-    /*if (period == REST || period == 0) {
-        NVIC_ST_RELOAD_R = REST-1;
-        NVIC_ST_CURRENT_R = 0;
-    } else {
-        NVIC_ST_RELOAD_R = period-1;
-        NVIC_ST_CURRENT_R = 0;
-    }*/
     NVIC_ST_RELOAD_R = period-1;
     NVIC_ST_CURRENT_R = 0;
+}
+
+void Sequencer_Init(void) {
+    uint8_t i;
+    SYSCTL_RCGC2_R |= 0x020;
+    for (i = 0; i < 4; i++) ; // Wait for clock to stabilize
+    GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;
+    GPIO_PORTF_CR_R |= 0x11;
+    GPIO_PORTF_PUR_R |= 0x11;
+    GPIO_PORTF_DIR_R &= ~0x11;
+    GPIO_PORTF_DEN_R |= 0x11;
+}
+
+uint8_t Sequencer_In(void) {
+    return (GPIO_PORTF_DATA_R & 0x11);
 }

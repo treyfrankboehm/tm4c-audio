@@ -3,7 +3,7 @@
 // Runs on LM4F120 or TM4C123
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-21
+// Last Modified: 2017-03-23
 // Lab number: 6
 // Hardware connections
 //     PB0 through PB5: DAC output bits
@@ -18,14 +18,14 @@
 
 // The three pitches activated by the button presses
 unsigned int pianoNotes[] = {
-    0,  // 0x0: If no buttons, play no sound
+    0,    // 0x0: If no buttons, play no sound
     Ees4, // 0x1: Button 1
-    D4, // 0x2: Button 2
-    0,  // 0x3: Nothing
-    C4, // 0x4: Button 3
-    B3,  // 0x5: Nothing
-    0,  // 0x6: Nothing
-    0,  // 0x7: Nothing
+    D4,   // 0x2: Button 2
+    0,    // 0x3: Button 2 and 1 simultaneously
+    C4,   // 0x4: Button 3
+    B3,   // 0x5: Button 3 and 1 simultaneously
+    0,    // 0x6: Button 3 and 2 simultaneously
+    0,    // 0x7: Button 3 and 2 and 1 simultaneously
 };
 
 // **************Piano_Init*********************

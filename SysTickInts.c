@@ -28,11 +28,19 @@
 #include "Piano.h"
 #include "Sound.h"
 #include "dac.h"
-//#include "midi-stuff/mirrors-midi.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
+
+
+// Stuff for the sequencer
+struct note_struct {
+    uint32_t pitch;
+    uint32_t duration;
+    uint8_t volume;
+};
+typedef struct note_struct note_t;
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -61,34 +69,61 @@ void SysTick_Init(uint32_t period) {
 
 volatile int eventIndex = 0;
 volatile int durationCount = 0;
+volatile int sequencerEnable = 0;
 
 void SysTick_Handler(void) {
-    
-    // This is the song!!!
-    /*
-    int pitch = mirrors_midi[eventIndex].pitch;
-    int duration = mirrors_midi[eventIndex].duration;
-    if (durationCount < duration*TEMPO/(5*pitch)) {
-        Sound_Play(pitch);
-        durationCount++;
-    } else {
-        eventIndex++;
-        if (eventIndex >= 539)
-            eventIndex = 0;
-        durationCount = 0;
-    }
-    */
-    
-    // Button handler!!!
-    volatile int buttons = Piano_In();
     extern volatile uint8_t wavePointer;
     extern unsigned short wave[];
-    extern unsigned int pianoNotes[];
-    if (buttons) {
-        Sound_Play(pianoNotes[buttons]); // Get the note specified in Piano.c
-        wavePointer = (wavePointer + 1) & 0x3F;
+    
+    // Check to see what to do about the sequencer
+    volatile int sequencerButtons = Sequencer_In();
+    if ((sequencerButtons & 0x10) == 0) {
+        sequencerEnable = 0;
+    } else if ((sequencerButtons & 0x01) == 0) {
+        sequencerEnable = 1;
+    }
+    
+    // If we want the sequencer enabled, go ahead.
+    if (sequencerEnable) {
+        extern note_t song_1[];
+        uint32_t pitch = song_1[eventIndex].pitch;
+        uint32_t duration = song_1[eventIndex].duration;
+        uint32_t volume = song_1[eventIndex].volume;
+        if (durationCount < duration*120000/pitch) {
+            Sound_Play(pitch);
+            durationCount++;
+        } else {
+            durationCount = 0;
+            eventIndex++;
+            if (eventIndex >= 11)
+                eventIndex = 0;
+        }
+        if (pitch != REST || pitch == 0) {
+            wavePointer = (wavePointer + 1) & 0x3F;
+        }
+    } else {
+        volatile int buttons = Piano_In();
+        extern unsigned int pianoNotes[];
+        if (buttons) {
+            Sound_Play(pianoNotes[buttons]); // Get the note specified in Piano.c
+            wavePointer = (wavePointer + 1) & 0x3F;
+        }
     }
     DAC_Out(wave[wavePointer]);
     
     // SysTick automatically acknowledges the ISR completion
 }
+
+note_t song_1[] = {
+    {G4, 500, 100},
+    {D5, 500, 100},
+    {Bes4, 750, 100},
+    {A4, 250, 100},
+    {G4, 250, 100},
+    {Bes4, 250, 100},
+    {A4, 250, 100},
+    {G4, 250, 100},
+    {Fis4, 250, 100},
+    {A4, 250, 100},
+    {D4, 500, 100}
+};

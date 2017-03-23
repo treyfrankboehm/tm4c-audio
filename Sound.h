@@ -94,7 +94,6 @@
 // Output: none
 void Sound_Init(uint32_t period);
 
-
 // **************Sound_Play*********************
 // Start sound output, and set Systick interrupt period 
 // Input: interrupt period
@@ -105,3 +104,7 @@ void Sound_Init(uint32_t period);
 // Output: none
 void Sound_Play(uint32_t period);
 
+// Initialize buttons to start/stop song
+void Sequencer_Init(void);
+
+uint8_t Sequencer_In(void);

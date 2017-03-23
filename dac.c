@@ -3,7 +3,7 @@
 // Runs on LM4F120 or TM4C123
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-19
+// Last Modified: 2017-03-23
 // Lab number: 6
 // Hardware connections
 //     PB0 through PB5: DAC output bits
