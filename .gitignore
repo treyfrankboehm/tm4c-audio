@@ -25,3 +25,7 @@ startup.d
 startup.lst
 startup.o
 texas.o
+ExtDll.iex
+systickints.crf
+systickints.d
+systickints.o
