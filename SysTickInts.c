@@ -25,9 +25,9 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "SysTickInts.h"
-#include "Piano.h"
-#include "Sound.h"
 #include "dac.h"
+
+#define REST    4444   // Musical silence is an exception
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
@@ -59,16 +59,14 @@ void SysTick_Init(uint32_t period) {
 }
 
 void SysTick_Handler(void) {
-    extern volatile uint8_t wavePointer;
+    extern volatile uint8_t wave_pointer0;
     extern unsigned short wave[];
-    volatile int buttons = Piano_In();
-    extern unsigned int pianoNotes[];
-    if (buttons) {
-        Sound_Play(pianoNotes[buttons]); // Get the note specified in Piano.c
-        // Only incremente the pointer if something needs to be played
-        wavePointer = (wavePointer + 1) & 0x3F;
+    extern uint32_t channel0_pitch;
+    if (channel0_pitch != REST) {
+        wave_pointer0++;
     }
-    DAC_Out(wave[wavePointer]);
-    
+    DAC_Out(wave[wave_pointer0]);
+    NVIC_ST_RELOAD_R = channel0_pitch-1;
+    NVIC_ST_CURRENT_R = 0;
     // SysTick automatically acknowledges the ISR completion
 }
