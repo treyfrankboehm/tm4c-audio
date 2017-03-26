@@ -6,4 +6,5 @@
 * Each struct specifies waveform to use
 * Each note specifies the volume
 * midistruct.py formats the time given an 80 MHz clock and the tempo from the MIDI
+* midistruct.py makes rests at the end of the song work
 
