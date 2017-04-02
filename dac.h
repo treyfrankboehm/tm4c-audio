@@ -9,18 +9,24 @@
 //     PB0 through PB5: DAC output bits
 //     PE0 through PE2: Synthesizer button inputs
 #include <stdint.h>
-// Header files contain the prototypes for public functions
-// this file explains what the module does
 
-// **************DAC_Init*********************
-// Initialize 4-bit DAC, called once 
-// Input: none
-// Output: none
 void DAC_Init(void);
 
+void DAC_Out(void);
 
-// **************DAC_Out*********************
-// output to DAC
-// Input: 4-bit data, 0 to 15 
-// Output: none
-void DAC_Out(uint8_t  data);
+void Timer0A_Init(uint32_t period);
+void Timer0A_Handler(void);
+
+void Timer1A_Init(uint32_t period);
+void Timer1A_Handler(void);
+
+void Timer2A_Init(uint32_t period);
+void Timer2A_Handler(void);
+
+void Timer3A_Init(uint32_t period);
+void Timer3A_Handler(void);
+
+void Timer5A_Init(uint32_t period);
+void Timer5A_Handler(void);
+
+void Timers_Init(void);

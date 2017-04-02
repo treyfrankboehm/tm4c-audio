@@ -1,6 +1,5 @@
 // Lab6.c
 // Runs on LM4F120 or TM4C123
-// Use SysTick interrupts to implement a 4-key digital piano
 // MOOC lab 13 or EE319K lab6 starter
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
@@ -16,47 +15,35 @@
 #include "tm4c123gh6pm.h"
 #include "TExaS.h"
 #include "dac.h"
+#include "Song.h"
 #include "SoundMacros.h"
-#include "song.h"
-#include "SysTickInts.h"
-#include "Timer0A.h"
 
 // basic functions defined at end of startup.s
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-uint32_t channel0_index = 0;
-uint32_t channel0_pitch = 440;
-uint32_t channel0_duration = 4444;
-uint32_t channel0_count = 0;
-uint32_t channel1_index = 0;
-uint32_t channel1_pitch = 440;
-uint32_t channel1_duration = 4444;
-uint32_t channel1_count = 0;
+// Global variables that are defined in 4-channel-audio.c:
+uint32_t durations[4] = {0};     // replaces channelX_duration
+uint32_t pitches[4] = {0};       // replaces channelX_pitch
+uint32_t event_lengths[4] = {0}; // replaces channelX_count
+uint32_t event_indices[4] = {0}; // replaces channelX_index
 
-extern const uint8_t wave[];
-extern uint8_t wave_pointer0;
-extern uint8_t wave_pointer1;
-extern const song_t channel0[];
-extern const song_t channel1[];
+const song_t *channels[4] = {channel0, channel1, channel2, channel3};
 
 int main(void){
     extern const song_t channel0[];
     extern const song_t channel1[];
+    uint8_t i;
     
     TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
     DAC_Init(); // Set up Port B
-    //SysTick_Init(A4); // Start SysTick interrupts at 440 Hz
-    Timer0A_Init(A4);
-    Timer1A_Init(A4);
-    Timer2A_Init(A4);
-    Timer3A_Init(A4);
+    Timers_Init(); // Start all the timers
     EnableInterrupts();
     while (1) {
-        channel0_pitch    = channel0[channel0_index].pitch;
-        channel0_duration = channel0[channel0_index].duration;
-        channel1_pitch    = channel1[channel1_index].pitch;
-        channel1_duration = channel1[channel1_index].duration;
+        for (i = 0; i < 4; i++) {
+            pitches[i]   = channels[i][event_indices[i]].pitch;
+            durations[i] = channels[i][event_indices[i]].duration;
+        }
     }
 }
 
