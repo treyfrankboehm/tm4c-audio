@@ -1,13 +1,16 @@
-/* %.h: .midi -> .csv -> homemade C struct
+/* crystallized-midi.h: .midi -> .csv -> C struct
  * Copyright (c) 2017 Trey Boehm
- * Include this file in Sound.c to make the note macros useful.
  */
 
-struct song_struct {
+#include "SoundMacros.h"
+
+#define TEMPO 300000
+
+typedef struct song_struct {
     uint32_t pitch;
     uint32_t duration;
-};
-typedef struct song_struct song_t;
+} song_t;
+
 
 const song_t channel0 = {
 	{G6, 192},
@@ -197,7 +200,6 @@ const song_t channel0 = {
 	{E6, 384},
 	{G6, 384},
 	{A6, 384},
-	{REST, -42816},
 	{0, 0}
 };
 
@@ -423,11 +425,11 @@ const song_t channel1 = {
 	{B5, 192},
 	{REST, 192},
 	{Cis6, 384},
-	{REST, -32064},
 	{0, 0}
 };
 
 const song_t channel2 = {
+	{REST, 10752},
 	{E5, 768},
 	{D5, 576},
 	{E5, 384},
@@ -489,45 +491,25 @@ const song_t channel2 = {
 	{D5, 192},
 	{F5, 192},
 	{G5, 192},
-	{E5, 0},
-	{REST, 768},
-	{E5, 0},
-	{D5, 0},
-	{REST, 576},
-	{D5, 0},
-	{E5, 0},
-	{REST, 384},
-	{E5, 0},
-	{D5, 0},
-	{REST, 384},
-	{D5, 0},
-	{B4, 0},
-	{REST, 384},
-	{B4, 0},
-	{D5, 0},
-	{REST, 192},
-	{D5, 0},
-	{G5, 0},
-	{REST, 768},
-	{G5, 0},
-	{Fis5, 0},
-	{REST, 384},
-	{Fis5, 0},
-	{D5, 0},
-	{REST, 192},
-	{D5, 0},
-	{E5, 0},
-	{REST, 192},
-	{E5, 0},
+	{E5, 768},
+	{D5, 576},
+	{E5, 384},
+	{D5, 384},
+	{B4, 384},
+	{D5, 192},
+	{E5, 768},
+	{Fis5, 384},
+	{D5, 192},
+	{E5, 192},
 	{REST, 576},
 	{B4, 192},
 	{D5, 192},
 	{G5, 192},
-	{REST, -26496},
 	{0, 0}
 };
 
 const song_t channel3 = {
+	{REST, 16512},
 	{B5, 1152},
 	{Fis5, 192},
 	{A5, 384},

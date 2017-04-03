@@ -13,6 +13,8 @@
 #include "tm4c123gh6pm.h"
 
 #define REST 4444
+#define TUNING_OFFSET 180 // Subtract when reloading timers to account
+                          // for the length of the function
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
@@ -105,7 +107,7 @@ void Timer0A_Handler(void) {
         wave_pointers[0] = (wave_pointers[0]+1) & 0x3F;
     }
     DAC_Out();
-    TIMER0_TAILR_R = pitches[0]-1;
+    TIMER0_TAILR_R = pitches[0]-TUNING_OFFSET;
     TIMER0_CTL_R = 0x00000001;
 }
 
@@ -136,7 +138,7 @@ void Timer1A_Handler(void) {
     }
     DAC_Out();
     // TODO: Change the pitches[i]-1 to reflect length of fxn
-    TIMER1_TAILR_R = pitches[1]-1;
+    TIMER1_TAILR_R = pitches[1]-TUNING_OFFSET;
     TIMER1_CTL_R = 0x00000001;
 }
 
@@ -166,8 +168,8 @@ void Timer2A_Handler(void) {
         wave_pointers[2] = (wave_pointers[2]+1) & 0x3F;
     }
     DAC_Out();
-    TIMER0_TAILR_R = pitches[2]-1;
-    TIMER0_CTL_R = 0x00000001;
+    TIMER2_TAILR_R = pitches[2]-TUNING_OFFSET;
+    TIMER2_CTL_R = 0x00000001;
 }
 
 void Timer3A_Init(uint32_t period){
@@ -193,8 +195,8 @@ void Timer3A_Handler(void) {
         wave_pointers[3] = (wave_pointers[3]+1) & 0x3F;
     }
     DAC_Out();
-    TIMER0_TAILR_R = pitches[3]-1;
-    TIMER0_CTL_R = 0x00000001;
+    TIMER3_TAILR_R = pitches[3]-TUNING_OFFSET;
+    TIMER3_CTL_R = 0x00000001;
 }
 
 void SysTick_Init(uint32_t period) {
@@ -212,11 +214,16 @@ void SysTick_Init(uint32_t period) {
 void SysTick_Handler(void) {
     uint8_t i;
     song_t channel;
+    extern uint32_t tempo;
     for (i = 0; i < 4; i++)  {
         event_lengths[i]++;
         if (durations[i] - event_lengths[i] == 0) {
             event_indices[i]++;
             event_lengths[i] = 0;
+//            wave_pointers[0] = 0;
+//            wave_pointers[1] = 0;
+//            wave_pointers[2] = 0;
+//            wave_pointers[3] = 0;
             wave_pointers[i] = 0;
         }
         channel = channels[i][event_indices[i]];
@@ -224,7 +231,7 @@ void SysTick_Handler(void) {
             event_indices[i] = 0;
         }
     }
-    NVIC_ST_RELOAD_R = 62500;
+    NVIC_ST_RELOAD_R = tempo;
     NVIC_ST_CURRENT_R = 0;
     // SysTick automatically acknowledges the ISR completion
 }

@@ -55,41 +55,62 @@ for i in range(len(midiCSV)):
 # supplied as-is. Tempo is taken into account here, too.
 # TODO: - make sure 5 channels will work
 #       - actually take tempo into account
+f2 = open("shit", 'w')
+for row in midiCSV:
+    for item in row:
+        f2.write(str(item))
+        f2.write(' ')
+    f2.write('\n')
+f2.close()
 mStruct = [ [], [], [], [], [] ]
 for i in range(0,len(midiCSV)-1,2):
-    channel   = midiCSV[i][0]
+    channel   = midiCSV[i][0] - 2
+    prevChan  = midiCSV[i-1][0] - 2
     pitch     = midiCSV[i][2]
     startTime = midiCSV[i][1]
     endTime   = midiCSV[i+1][1]
     duration  = endTime - startTime
     track     = midiCSV[i][0]
-    mStruct[channel-2].append([macroNums[pitch], duration])
+
+    # Check if the first event of a channel is a rest
+    if prevChan != channel and startTime != 0:
+        mStruct[channel].append([macroNums[0], startTime])
+    
+    if duration == 0:
+        print(channel, pitch, track, i)
+
+    mStruct[channel].append([macroNums[pitch], duration])
 
     # Check if a rest happens
     if i < len(midiCSV) - 2: # not yet at the last item
+        nextChan = midiCSV[i+2][0] - 2
         nextTime = midiCSV[i+2][1]
         rest     = nextTime - endTime
-        if rest:
-            mStruct[channel-2].append([macroNums[0], rest])
+        if nextChan == channel and rest:
+            mStruct[channel].append([macroNums[0], rest])
 
-head = "\
-/* %.h: .midi -> .csv -> homemade C struct\n\
+head = ("\
+/* %s.h: .midi -> .csv -> C struct\n\
  * Copyright (c) 2017 Trey Boehm\n\
- * Include this file in Sound.c to make the note macros useful.\n\
  */\n\
 \n\
-struct song_struct {\n\
+#include <stdint.h>\n\
+#include \"SoundMacros.h\"\n\
+\n\
+#define TEMPO %d\n\
+\n\
+typedef struct song_struct {\n\
     uint32_t pitch;\n\
     uint32_t duration;\n\
-};\n\
-typedef struct song_struct song_t;\n\
-"
+} song_t;\n\
+\n\
+" % (filename, tempo))
 f = open("%s.h" % filename, 'w')
 f.write(head)
 for i in range(len(mStruct)):
     eventCount = len(mStruct[i])
     if eventCount != 0:
-        f.write("\nconst song_t channel%d = {\n" % i)
+        f.write("\nconst song_t channel%d[] = {\n" % i)
         for j in range(eventCount):
             f.write("\t{%s, %d},\n" %
                     (mStruct[i][j][0], mStruct[i][j][1]))

@@ -103,8 +103,8 @@ VoiceThree = \relative c' {
 
     e2 d4. e4 d b d8 |
     e2 fis4 g8 a r4 r8 d, f g |
-    <e g>2 <d fis>4. <e g>4 <d fis> <b d> <d fis>8 |
-    <e g>2 <fis a>4 <d g>8 <e g> r4 r8 b d g |
+    e2 d4. e4 d b d8 |
+    e2 fis4 d8 e r4 r8 b d g |
 }
 
 VoiceFour = \relative c'' {

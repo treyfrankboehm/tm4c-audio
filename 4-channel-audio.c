@@ -15,7 +15,9 @@
 #include "tm4c123gh6pm.h"
 #include "TExaS.h"
 #include "dac.h"
-#include "Song.h"
+//#include "crystallized-midi.h"
+//#include "jesu.h"
+#include "little.h"
 #include "SoundMacros.h"
 
 // basic functions defined at end of startup.s
@@ -27,6 +29,8 @@ uint32_t durations[4] = {0};     // replaces channelX_duration
 uint32_t pitches[4] = {0};       // replaces channelX_pitch
 uint32_t event_lengths[4] = {0}; // replaces channelX_count
 uint32_t event_indices[4] = {0}; // replaces channelX_index
+
+uint32_t tempo = TEMPO/5;
 
 const song_t *channels[4] = {channel0, channel1, channel2, channel3};
 

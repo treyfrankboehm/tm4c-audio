@@ -1,13 +1,16 @@
-/* %.h: .midi -> .csv -> homemade C struct
+/* little.h: .midi -> .csv -> C struct
  * Copyright (c) 2017 Trey Boehm
- * Include this file in Sound.c to make the note macros useful.
  */
 
-struct song_struct {
+#include "SoundMacros.h"
+
+#define TEMPO 714285
+
+typedef struct song_struct {
     uint32_t pitch;
     uint32_t duration;
-};
-typedef struct song_struct song_t;
+} song_t;
+
 
 const song_t channel0 = {
 	{G5, 384},
@@ -737,11 +740,11 @@ const song_t channel0 = {
 	{A4, 192},
 	{Fis5, 192},
 	{G5, 1536},
-	{REST, -96768},
 	{0, 0}
 };
 
 const song_t channel1 = {
+	{REST, 7680},
 	{D5, 384},
 	{A5, 384},
 	{F5, 576},
@@ -1035,11 +1038,11 @@ const song_t channel1 = {
 	{Dis5, 192},
 	{D5, 192},
 	{D5, 1536},
-	{REST, -86784},
 	{0, 0}
 };
 
 const song_t channel2 = {
+	{REST, 17664},
 	{G4, 384},
 	{D5, 384},
 	{Ais4, 576},
@@ -1568,11 +1571,11 @@ const song_t channel2 = {
 	{C5, 192},
 	{A4, 192},
 	{Ais4, 1536},
-	{REST, -79104},
 	{0, 0}
 };
 
 const song_t channel3 = {
+	{REST, 25344},
 	{D4, 384},
 	{A4, 384},
 	{F4, 576},
