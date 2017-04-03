@@ -2,7 +2,7 @@
 // This header file contains macros defining wait times for pitches
 // Program written by: Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-23
+// Last Modified: 2017-04-03
 
 // The periods and frequencies copied/pasted from Valvano's spreadsheet.
 // Period = 80,000,000/64/Freq = 1,250,000/Freq

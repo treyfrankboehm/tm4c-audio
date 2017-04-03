@@ -12,9 +12,11 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 
+// Can't include SoundMacros.h and define multiple times
 #define REST 44444
-#define TUNING_OFFSET 180 // Subtract when reloading timers to account
-                          // for the length of the function
+// Subtract when reloading timers 0-3 to account for function length
+#define TUNING_OFFSET 179
+// Needed for SysTick_Init()
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
@@ -56,7 +58,36 @@ const uint8_t sawtooth_wave[64] = {
     49,50,51,52,53,54,55,56,57,58,59,60,61,62,63
 };
 
-const uint8_t* waves[4] = {sine_wave, sine_wave, sine_wave, sine_wave};
+const uint8_t triangle_wave[64] = {
+    32,34,36,38,40,42,44,48,50,52,54,56,58,60,62,63,
+    62,60,58,56,54,52,50,48,46,44,42,40,38,36,34,32,
+    30,28,26,24,22,20,18,16,14,12,10,8,6,4,2,0,
+    2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32
+};
+
+const uint8_t pulse_eighth_wave[64] = {
+    63,63,63,63,63,63,63,63,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+
+const uint8_t pulse_quarter_wave[64] = {
+    63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+
+const uint8_t pulse_half_wave[64] = {
+    63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,
+    63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+
+
+const uint8_t* waves[4] = {pulse_eighth_wave, pulse_quarter_wave, pulse_half_wave, triangle_wave};
 
 void DAC_Init(void){
     uint8_t i;
@@ -72,13 +103,10 @@ void DAC_Out(void){
     uint8_t i;
     uint16_t output = 0;
     for (i = 0; i < 4; i++) {
-        output += sine_wave[wave_pointers[i]];
+        output += waves[i][wave_pointers[i]];
     }
-    output /= 4;
-    //output = sine_wave[wave_pointers[0]];
+    output >>= 2;
     GPIO_PORTB_DATA_R = (output&0x3F);
-    //GPIO_PORTB_DATA_R &= ~0x3F; // Friendly way to write sound
-    //GPIO_PORTB_DATA_R |= (0x3F & output);
 }
 
 void Timer0A_Init(uint32_t period) {
@@ -137,7 +165,6 @@ void Timer1A_Handler(void) {
         wave_pointers[1] = (wave_pointers[1]+1) & 0x3F;
     }
     DAC_Out();
-    // TODO: Change the pitches[i]-1 to reflect length of fxn
     TIMER1_TAILR_R = pitches[1]-TUNING_OFFSET;
     TIMER1_CTL_R = 0x00000001;
 }

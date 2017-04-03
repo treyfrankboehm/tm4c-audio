@@ -3,12 +3,10 @@
 // MOOC lab 13 or EE319K lab6 starter
 // Program written by: Emily Steck and Trey Boehm
 // Date Created: 2017-03-06
-// Last Modified: 2017-03-23
+// Last Modified: 2017-04-03
 // Lab number: 6
 // Hardware connections
 //     PB0 through PB5: DAC output bits
-//     PE0 through PE2: Synthesizer button inputs
-//     PF0 and PF4: On-board start/stop buttons
 
 
 #include <stdint.h>
@@ -35,20 +33,19 @@ uint32_t tempo = TEMPO/5;
 const song_t *channels[4] = {channel0, channel1, channel2, channel3};
 
 int main(void){
-    extern const song_t channel0[];
-    extern const song_t channel1[];
     uint8_t i;
     
     TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
     DAC_Init(); // Set up Port B
     Timers_Init(); // Start all the timers
     EnableInterrupts();
-    for (i = 0; i < 4; i++) { // Initialize pitches and duration (usually
-                              // done in SysTick_Handler())
+    // Initialize pitches and duration (hereafter in SysTick_Handler())
+    for (i = 0; i < 4; i++) {
         pitches[i]   = channels[i][event_indices[i]].pitch;
         durations[i] = channels[i][event_indices[i]].duration;
     }
     while (1) {
+        ;
     }
 }
 
