@@ -43,11 +43,12 @@ int main(void){
     DAC_Init(); // Set up Port B
     Timers_Init(); // Start all the timers
     EnableInterrupts();
+    for (i = 0; i < 4; i++) { // Initialize pitches and duration (usually
+                              // done in SysTick_Handler())
+        pitches[i]   = channels[i][event_indices[i]].pitch;
+        durations[i] = channels[i][event_indices[i]].duration;
+    }
     while (1) {
-        for (i = 0; i < 4; i++) {
-            pitches[i]   = channels[i][event_indices[i]].pitch;
-            durations[i] = channels[i][event_indices[i]].duration;
-        }
     }
 }
 

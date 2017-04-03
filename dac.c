@@ -220,11 +220,20 @@ void SysTick_Handler(void) {
         if (durations[i] - event_lengths[i] == 0) {
             event_indices[i]++;
             event_lengths[i] = 0;
+            // Phase-lock all channels 
             wave_pointers[0] = 0;
             wave_pointers[1] = 0;
             wave_pointers[2] = 0;
             wave_pointers[3] = 0;
-            wave_pointers[i] = 0;
+            // Update the pitch and duration for this channel
+            pitches[i]   = channels[i][event_indices[i]].pitch;
+            durations[i] = channels[i][event_indices[i]].duration;
+            switch (i) {
+                case 0: Timer0A_Handler();
+                case 1: Timer1A_Handler();
+                case 2: Timer2A_Handler();
+                case 3: Timer3A_Handler();
+            }
         }
         channel = channels[i][event_indices[i]];
         if (channel.duration == 0 && channel.pitch == 0) {
