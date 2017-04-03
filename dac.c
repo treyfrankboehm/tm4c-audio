@@ -86,8 +86,24 @@ const uint8_t pulse_half_wave[64] = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 
+const uint8_t organ_wave[64] = {
+    31,36,41,46,50,54,57,60,62,63,63,63,61,60,57,54,
+    51,47,43,40,36,33,29,27,25,23,22,21,21,22,23,24,
+    26,27,29,31,32,33,34,34,34,34,33,31,29,26,24,21,
+    18,15,12,10,8,6,5,5,6,7,9,11,14,18,22,27
+};
 
-const uint8_t* waves[4] = {pulse_eighth_wave, pulse_quarter_wave, pulse_half_wave, triangle_wave};
+uint8_t new_wave[64] ={
+    31,39,47,53,58,61,62,62,60,57,52,47,42,38,35,32,
+    31,32,35,38,42,47,52,57,60,62,62,61,58,53,47,39,
+    31,24,16,10,5,2,1,1,3,6,11,16,21,25,28,31,
+    31,31,28,25,21,16,11,6,3,1,1,2,5,10,16,24
+};
+
+//const uint8_t* waves[4] = {pulse_eighth_wave, pulse_quarter_wave, pulse_half_wave, triangle_wave};
+//const uint8_t* waves[4] = {triangle_wave, triangle_wave, triangle_wave,triangle_wave};
+//const uint8_t* waves[4] = {organ_wave, organ_wave, organ_wave, organ_wave};
+const uint8_t* waves[4] = {new_wave, organ_wave, sine_wave, triangle_wave};
 
 void DAC_Init(void){
     uint8_t i;
@@ -248,10 +264,10 @@ void SysTick_Handler(void) {
             event_indices[i]++;
             event_lengths[i] = 0;
             // Phase-lock all channels 
-            wave_pointers[0] = 0;
-            wave_pointers[1] = 0;
-            wave_pointers[2] = 0;
-            wave_pointers[3] = 0;
+            //wave_pointers[0] = 0;
+            //wave_pointers[1] = 0;
+            //wave_pointers[2] = 0;
+            //wave_pointers[3] = 0;
             // Update the pitch and duration for this channel
             pitches[i]   = channels[i][event_indices[i]].pitch;
             durations[i] = channels[i][event_indices[i]].duration;
@@ -274,9 +290,10 @@ void SysTick_Handler(void) {
 
 
 void Timers_Init(void) {
+    extern uint32_t tempo;
     Timer0A_Init(2800);
     Timer1A_Init(2800);
     Timer2A_Init(2800);
     Timer3A_Init(2800);
-    SysTick_Init(62500);
+    SysTick_Init(tempo);
 }
