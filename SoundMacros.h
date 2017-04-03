@@ -9,7 +9,7 @@
 // Each macro includes the pitch, a possible modifier, and the standard
 // octave designation. "is" indicates "sharp" and "es" indicates "flat"
 // TODO: Add more octaves
-#define REST    4444   // Musical silence is an exception
+#define REST    44444   // Musical silence is an exception
 #define C7      597    // 2093 Hz
 #define B6      633    // 1975.5 Hz
 #define Bes6    670    // 1864.7 Hz

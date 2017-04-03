@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 
-#define REST 4444
+#define REST 44444
 #define TUNING_OFFSET 180 // Subtract when reloading timers to account
                           // for the length of the function
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
@@ -220,10 +220,10 @@ void SysTick_Handler(void) {
         if (durations[i] - event_lengths[i] == 0) {
             event_indices[i]++;
             event_lengths[i] = 0;
-//            wave_pointers[0] = 0;
-//            wave_pointers[1] = 0;
-//            wave_pointers[2] = 0;
-//            wave_pointers[3] = 0;
+            wave_pointers[0] = 0;
+            wave_pointers[1] = 0;
+            wave_pointers[2] = 0;
+            wave_pointers[3] = 0;
             wave_pointers[i] = 0;
         }
         channel = channels[i][event_indices[i]];
