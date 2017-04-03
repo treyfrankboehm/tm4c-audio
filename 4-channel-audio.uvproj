@@ -416,24 +416,9 @@
               <FilePath>.\dac.c</FilePath>
             </File>
             <File>
-              <FileName>SysTickInts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\SysTickInts.c</FilePath>
-            </File>
-            <File>
-              <FileName>SysTickInts.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\SysTickInts.h</FilePath>
-            </File>
-            <File>
               <FileName>4-channel-audio.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\4-channel-audio.c</FilePath>
-            </File>
-            <File>
-              <FileName>Timer0A.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Timer0A.c</FilePath>
             </File>
             <File>
               <FileName>dac.h</FileName>
@@ -454,11 +439,6 @@
               <FileName>TExaS.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\TExaS.h</FilePath>
-            </File>
-            <File>
-              <FileName>Timer0A.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Timer0A.h</FilePath>
             </File>
             <File>
               <FileName>tm4c123gh6pm.h</FileName>

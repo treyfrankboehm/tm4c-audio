@@ -13,6 +13,9 @@
 #include "tm4c123gh6pm.h"
 
 #define REST 4444
+#define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
+#define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
+#define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -65,13 +68,15 @@ void DAC_Init(void){
 
 void DAC_Out(void){
     uint8_t i;
-    uint16_t output;
+    uint16_t output = 0;
     for (i = 0; i < 4; i++) {
-        output += *waves[wave_pointers[i]];
+        output += sine_wave[wave_pointers[i]];
     }
     output /= 4;
-    output = (uint8_t)output;
-    GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R & 0xFFC0) | output;
+    //output = sine_wave[wave_pointers[0]];
+    GPIO_PORTB_DATA_R = (output&0x3F);
+    //GPIO_PORTB_DATA_R &= ~0x3F; // Friendly way to write sound
+    //GPIO_PORTB_DATA_R |= (0x3F & output);
 }
 
 void Timer0A_Init(uint32_t period) {
@@ -192,13 +197,19 @@ void Timer3A_Handler(void) {
     TIMER0_CTL_R = 0x00000001;
 }
 
-void Timer5A_Init(uint32_t period) {
+void SysTick_Init(uint32_t period) {
+    long sr;
+    sr = StartCritical();
+    NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
+    NVIC_ST_RELOAD_R = period-1;// reload value
+    NVIC_ST_CURRENT_R = 0;      // any write to current clears it
+    NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R & 0x00FFFFFF) | 0x40000000; // priority 2
+                                // enable SysTick with core clock and interrupts
+    NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
+    EndCritical(sr);
 }
 
-void Timer5A_Handler(void) {
-    // Stop Timer5 for the duration of this function
-    TIMER5_ICR_R = TIMER_ICR_TATOCINT;
-    TIMER5_CTL_R = 0x00000000;
+void SysTick_Handler(void) {
     uint8_t i;
     song_t channel;
     for (i = 0; i < 4; i++)  {
@@ -208,19 +219,21 @@ void Timer5A_Handler(void) {
             event_lengths[i] = 0;
             wave_pointers[i] = 0;
         }
-        channel = *(channels[event_indices[i]]);
+        channel = channels[i][event_indices[i]];
         if (channel.duration == 0 && channel.pitch == 0) {
             event_indices[i] = 0;
         }
     }
-    TIMER5_TAILR_R = 62500;
-    TIMER5_CTL_R = 0x00000001;
+    NVIC_ST_RELOAD_R = 62500;
+    NVIC_ST_CURRENT_R = 0;
+    // SysTick automatically acknowledges the ISR completion
 }
+
 
 void Timers_Init(void) {
     Timer0A_Init(2800);
     Timer1A_Init(2800);
     Timer2A_Init(2800);
     Timer3A_Init(2800);
-    Timer5A_Init(2800);
+    SysTick_Init(62500);
 }

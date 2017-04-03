@@ -26,7 +26,7 @@ void Timer2A_Handler(void);
 void Timer3A_Init(uint32_t period);
 void Timer3A_Handler(void);
 
-void Timer5A_Init(uint32_t period);
-void Timer5A_Handler(void);
+void SysTick_Init(uint32_t period);
+void SysTick_Handler(void);
 
 void Timers_Init(void);
