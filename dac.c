@@ -42,7 +42,12 @@ extern song_t* channels[];
 // Pointers to the next voltage level in the wave to output
 uint8_t wave_pointers[4] = {0, 0, 0, 0};
 
-// 6-bit 64-element sine wave, copy/pasted from Valvano's spreadsheet
+/* Pointers to volume levels in corresponding volume envelope. Note that
+ * these are 2-indexed, not 0-indexed because [0] and [1] hold other
+ * important information.
+ */
+uint8_t volume_pointers[4] = {2, 2, 2, 2};
+
 const uint8_t sine_wave[64] = {
     32,35,38,41,44,47,49,52,54,56,58,59,
     61,62,62,63,63,63,62,62,61,59,58,56,
@@ -145,6 +150,24 @@ const uint8_t guitar_wave[64] = {
   10,12,12,12,12,12,13,16,18,21,21,21
 };
 
+/* Example volume enveope for an organ:
+ * Each array element is an unsigned 6-bit int [0..63] to reflect the 6-
+ * bit precision of the DAC. SysTick will increment an index until the
+ * sustain volume is reached. This volume is indicated by looking at [0]
+ * and interpretting that not as a volume, but as an index. Also, [1]
+ * holds the length of the array for easy access
+ */
+const uint8_t organ_volume[] = {21, // Index of sustain volume
+    29, // length of the array
+	1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61, // attack (16 elements)
+	58, 55, 52, 49, // decay (4 elements)
+	48, // sustain (1 element)
+	40, 32, 24, 16, 8, 0 // release, always ends with 0 (6 elements)
+};
+
+// Specifies which channel is using which volume envelope
+const uint8_t* volumes[4] = {organ_volume, organ_volume, organ_volume, organ_volume};
+
 //const uint8_t* waves[4] = {pulse_eighth_wave, pulse_quarter_wave, pulse_half_wave, triangle_wave};
 //const uint8_t* waves[4] = {triangle_wave, triangle_wave, triangle_wave, triangle_wave};
 //const uint8_t* waves[4] = {organ_wave, organ_wave, organ_wave, triangle_wave};
@@ -163,11 +186,15 @@ void DAC_Init(void){
 
 void DAC_Out(void){
     uint8_t i;
+    int8_t tmp;
     uint16_t output = 0;
     for (i = 0; i < 4; i++) {
-        output += waves[i][wave_pointers[i]];
+        tmp = waves[i][wave_pointers[i]] - 31; // center wave at 0
+        tmp = tmp*volumes[i][volume_pointers[i]]; // multiply by volume
+        output += tmp;
     }
-    output >>= 2;
+    output >>= 2; // divide by 4 (4 channels)
+    output += 32; // re-center at 31
     GPIO_PORTB_DATA_R = (output&0x3F);
 }
 
@@ -306,14 +333,30 @@ void SysTick_Handler(void) {
     extern uint32_t tempo;
     for (i = 0; i < 4; i++)  {
         event_lengths[i]++;
+        // check if we're at sustain volume
+        if (event_lengths[i] >= volumes[i][0]) {
+            // check if it's time to decay
+            if (event_lengths[i] >= volumes[i][1]) {
+                volume_pointers[i]++;
+            }
+        } else {
+            // if not at sustain, just increment
+            volume_pointers[i]++;
+        }
+        
         if (durations[i] - event_lengths[i] == 0) {
+            // Go to the next event and reset counter
             event_indices[i]++;
             event_lengths[i] = 0;
-            // Phase-lock all channels 
-            //wave_pointers[0] = 0;
-            //wave_pointers[1] = 0;
-            //wave_pointers[2] = 0;
-            //wave_pointers[3] = 0;
+            // Start at the beginning of volume envelope
+            volume_pointers[i] = 1;
+            // Phase-lock all channels
+            /*
+            wave_pointers[0] = 0;
+            wave_pointers[1] = 0;
+            wave_pointers[2] = 0;
+            wave_pointers[3] = 0;
+            */
             // Update the pitch and duration for this channel
             pitches[i]   = channels[i][event_indices[i]].pitch;
             durations[i] = channels[i][event_indices[i]].duration;
