@@ -22,11 +22,10 @@
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-// Global variables that are defined in 4-channel-audio.c:
-uint32_t durations[4] = {0};     // replaces channelX_duration
-uint32_t pitches[4] = {0};       // replaces channelX_pitch
-uint32_t event_lengths[4] = {0}; // replaces channelX_count
-uint32_t event_indices[4] = {0}; // replaces channelX_index
+uint32_t durations[4] = {0};
+uint32_t pitches[4] = {0};
+uint32_t event_lengths[4] = {0};
+uint32_t event_indices[4] = {0};
 
 uint32_t tempo = TEMPO/5;
 

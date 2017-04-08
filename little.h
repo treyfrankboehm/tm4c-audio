@@ -3,6 +3,7 @@
  */
 
 #include "SoundMacros.h"
+#include <stdint.h>
 
 #define TEMPO 714285
 
