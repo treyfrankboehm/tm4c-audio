@@ -8,8 +8,7 @@
 // Period = 80,000,000/64/Freq = 1,250,000/Freq
 // Each macro includes the pitch, a possible modifier, and the standard
 // octave designation. "is" indicates "sharp" and "es" indicates "flat"
-// TODO: Add more octaves
-#define REST    44444   // Musical silence is an exception
+#define REST    44444  // Musical silence is an exception
 #define C7      597    // 2093 Hz
 #define B6      633    // 1975.5 Hz
 #define Bes6    670    // 1864.7 Hz
@@ -79,4 +78,28 @@
 #define Des3    9019   // 138.6 Hz
 #define Cis3    9019   // 138.6 Hz
 #define C3      9556   // 130.8 Hz
+#define B2      10124
+#define Ais2    10726
+#define A2      11364
+#define Gis2    12039
+#define G2      12755
+#define Fis2    13514
+#define F2      14317
+#define E2      15169
+#define Dis2    16071
+#define D2      17026
+#define Cis2    18039
+#define C2      19111
+#define B1      20248
+#define Ais1    21452
+#define A1      22727
+#define Gis1    24079
+#define G1      25511
+#define Fis1    27027
+#define F1      28635
+#define E1      30337
+#define Dis1    32141
+#define D1      34052
+#define Cis1    36077
+#define C1      38223
 

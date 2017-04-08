@@ -12,7 +12,7 @@ typedef struct song_struct {
 } song_t;
 
 
-const song_t channel0[] = {
+const song_t channel0 = {
 	{REST, 192},
 	{G5, 192},
 	{A5, 192},
@@ -604,7 +604,7 @@ const song_t channel0[] = {
 	{0, 0}
 };
 
-const song_t channel1[] = {
+const song_t channel1 = {
 	{REST, 576},
 	{G5, 384},
 	{Fis5, 192},
@@ -876,7 +876,7 @@ const song_t channel1[] = {
 	{0, 0}
 };
 
-const song_t channel2[] = {
+const song_t channel2 = {
 	{REST, 576},
 	{D5, 384},
 	{REST, 192},
@@ -1147,7 +1147,7 @@ const song_t channel2[] = {
 	{0, 0}
 };
 
-const song_t channel3[] = {
+const song_t channel3 = {
 	{G3, 576},
 	{G4, 576},
 	{E4, 576},

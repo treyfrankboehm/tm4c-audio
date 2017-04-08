@@ -35,7 +35,7 @@ i = 0
 while 1:
     if i >= len(midiCSV):
         break
-    elif not "Note_on_c" in midiCSV[i]:
+    elif not "Note_on_c" in midiCSV[i] or "Note_off_c" in midiCSV[i]:
         del midiCSV[i]
     else:
         i += 1
@@ -53,8 +53,6 @@ for i in range(len(midiCSV)):
 # different channels). pitch is exactly as it is formatted in the
 # Sound.c file (A4, Ais4, B5, etc) and duration is a period that can be
 # supplied as-is. Tempo is taken into account here, too.
-# TODO: - make sure 5 channels will work
-#       - actually take tempo into account
 f2 = open("shit", 'w')
 for row in midiCSV:
     for item in row:
@@ -94,7 +92,6 @@ head = ("\
  * Copyright (c) 2017 Trey Boehm\n\
  */\n\
 \n\
-#include <stdint.h>\n\
 #include \"SoundMacros.h\"\n\
 \n\
 #define TEMPO %d\n\
@@ -110,7 +107,7 @@ f.write(head)
 for i in range(len(mStruct)):
     eventCount = len(mStruct[i])
     if eventCount != 0:
-        f.write("\nconst song_t channel%d[] = {\n" % i)
+        f.write("\nconst song_t channel%d = {\n" % i)
         for j in range(eventCount):
             f.write("\t{%s, %d},\n" %
                     (mStruct[i][j][0], mStruct[i][j][1]))
