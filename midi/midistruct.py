@@ -99,7 +99,7 @@ head = ("\
 typedef struct song_struct {\n\
     uint32_t pitch;\n\
     uint32_t duration;\n\
-} song_t;\n\
+} Song;\n\
 \n\
 " % (filename, tempo))
 f = open("%s.h" % filename, 'w')
@@ -107,7 +107,7 @@ f.write(head)
 for i in range(len(mStruct)):
     eventCount = len(mStruct[i])
     if eventCount != 0:
-        f.write("\nconst song_t channel%d = {\n" % i)
+        f.write("\nconst Song Channel%d = {\n" % i)
         for j in range(eventCount):
             f.write("\t{%s, %d},\n" %
                     (mStruct[i][j][0], mStruct[i][j][1]))

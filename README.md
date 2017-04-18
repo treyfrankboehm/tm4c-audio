@@ -4,7 +4,3 @@
 
 ## To-do:
 * Each MIDI event (note) specifies the relative volume 
-* Find the source of pulsing/thumping/clicking sound
-* Add more note macros to allow lower pitches
-* Fine-tune the TUNING_OFFSET macro value in dac.c
-* Get rid of raspy/clashing sounds that come with multi-channel

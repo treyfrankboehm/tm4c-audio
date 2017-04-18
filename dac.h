@@ -1,17 +1,14 @@
-// dac.h
-// This software configures DAC output
-// Runs on LM4F120 or TM4C123
-// Program written by: Emily Steck and Trey Boehm
-// Date Created: 2017-03-06
-// Last Modified: 2017-03-19
-// Lab number: 6
-// Hardware connections
-//     PB0 through PB5: DAC output bits
-//     PE0 through PE2: Synthesizer button inputs
+/* dac.h
+ * This software configures DAC output
+ * Trey Boehm, 2017-04-17
+ * Hardware connections: PB0-PB5 are DAC output bits
+ */
+
 #include <stdint.h>
 
-void DAC_Init(void);
+// TODO: Include waves in this file?
 
+void DAC_Init(void);
 void DAC_Out(void);
 
 void Timer0A_Init(uint32_t period);
