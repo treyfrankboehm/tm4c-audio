@@ -426,11 +426,6 @@
               <FilePath>.\dac.h</FilePath>
             </File>
             <File>
-              <FileName>song.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\song.h</FilePath>
-            </File>
-            <File>
               <FileName>SoundMacros.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\SoundMacros.h</FilePath>

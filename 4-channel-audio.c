@@ -1,53 +1,51 @@
-// Lab6.c
-// Runs on LM4F120 or TM4C123
-// MOOC lab 13 or EE319K lab6 starter
-// Program written by: Emily Steck and Trey Boehm
-// Date Created: 2017-03-06
-// Last Modified: 2017-04-03
-// Lab number: 6
-// Hardware connections
-//     PB0 through PB5: DAC output bits
-
+/* 4-channel-audio.c
+ * Trey Boehm, 2017-04-18
+ * Main runner file for the DAC.
+ * Hardware connections: PB0-PB5 are DAC output bits.
+ */
 
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "TExaS.h"
 #include "dac.h"
-//#include "crystallized-midi.h"
-//#include "jesu.h"
 #include "little.h"
 #include "SoundMacros.h"
 
-// basic functions defined at end of startup.s
-void DisableInterrupts(void); // Disable interrupts
-void EnableInterrupts(void);  // Enable interrupts
+void DisableInterrupts(void);
+void EnableInterrupts(void);
 
-uint32_t durations[4] = {0};
-uint32_t pitches[4] = {0};
-uint32_t event_lengths[4] = {0};
-uint32_t event_indices[4] = {0};
+uint32_t Durations[4]     = {0};
+uint32_t Pitches[4]       = {0};
+uint32_t Event_Lengths[4] = {0};
+uint32_t Event_Indices[4] = {0};
 
-uint32_t tempo = TEMPO/5;
+uint32_t Tempo = TEMPO/5;
 
-const song_t *channels[4] = {channel0, channel1, channel2, channel3};
+const Song *Channels[4] = {Channel0, Channel1, Channel2, Channel3};
 
 int main(void){
     uint8_t i;
     
-    TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
+    /* TODO: Get rid of TExaS_Init and replace with code that only sets
+     * the bus clock to 80 MHz (not auto-grader crap)
+     */
+    TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);
     DAC_Init(); // Set up Port B
     Timers_Init(); // Start all the timers
     EnableInterrupts();
+    // Uncomment the following block of code to test tuning.
     /*
     Timer0A_Init(REST);
-    pitches[0] = C7;
-    while (1) {
-    }
+    Pitches[0] = C7;
+    Pitches[1] = C7;
+    Pitches[2] = C7;
+    Pitches[3] = C7;
+    while (1) { }
     */
-    // Initialize pitches and duration (hereafter in SysTick_Handler())
+    // Initialize Pitches and duration (hereafter in SysTick_Handler())
     for (i = 0; i < 4; i++) {
-        pitches[i]   = channels[i][event_indices[i]].pitch;
-        durations[i] = channels[i][event_indices[i]].duration;
+        Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
+        Durations[i] = Channels[i][Event_Indices[i]].duration;
     }
     while (1) {
         ;

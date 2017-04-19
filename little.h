@@ -10,10 +10,10 @@
 typedef struct song_struct {
     uint32_t pitch;
     uint32_t duration;
-} song_t;
+} Song;
 
 
-const song_t channel0[] = {
+const Song Channel0[] = {
 	{G5, 384},
 	{D6, 384},
 	{Ais5, 576},
@@ -744,7 +744,7 @@ const song_t channel0[] = {
 	{0, 0}
 };
 
-const song_t channel1[] = {
+const Song Channel1[] = {
 	{REST, 7680},
 	{D5, 384},
 	{A5, 384},
@@ -1042,7 +1042,7 @@ const song_t channel1[] = {
 	{0, 0}
 };
 
-const song_t channel2[] = {
+const Song Channel2[] = {
 	{REST, 17664},
 	{G4, 384},
 	{D5, 384},
@@ -1575,7 +1575,7 @@ const song_t channel2[] = {
 	{0, 0}
 };
 
-const song_t channel3[] = {
+const Song Channel3[] = {
 	{REST, 25344},
 	{D4, 384},
 	{A4, 384},
