@@ -1,10 +1,10 @@
 # 4-channel-audio
 
-## This is a fork of our 319K lab 6 repo. The goal is to provide the ability to convert 4-channel MIDIs to a header file with structs that is parseable by the program to play with a six bit DAC.
+## Goal: Feed MIDIs with up to 4 channels into the script `midistruct.py`. These header files with structs can be included as songs and played by the 6-bit DAC.
 
 ## To-do:
-### High priority
-* Implement volume envelopes
-* Add more note macros and updated BWV 578 arrangement
-### Low priority
-* Each MIDI event (note) specifies the relative volume 
+* Improve volume envelopes to make more realistic instruments.
+* Each MIDI event (note) specifies its relative volume.
+* Generate a noise signal to use with percussive sounds.
+* Implement percussion instruments.
+* `cat * | grep -i 'todo'`
