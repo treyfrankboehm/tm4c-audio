@@ -1,6 +1,6 @@
 /* 4-channel-audio.c
- * Trey Boehm, 2017-04-17
  * This file initializes and runs the timers that run through the MIDI.
+ * Trey Boehm, 2017-04-19
  * Hardware connections: PB0-PB5 are DAC output bits.
  */
 
