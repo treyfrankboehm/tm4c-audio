@@ -1,5 +1,5 @@
 // SoundMacros.h
-// This header file contains macros defining wait times for pitches
+// This header file contains macros defining wait times for Pitches
 // Program written by: Trey Boehm
 // Date Created: 2017-03-06
 // Last Modified: 2017-04-03

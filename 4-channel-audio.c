@@ -1,7 +1,7 @@
 /* 4-channel-audio.c
- * This file initializes and runs the timers that run through the MIDI.
  * Trey Boehm, 2017-04-17
- * Hardware connections: None.
+ * This file initializes and runs the timers that run through the MIDI.
+ * Hardware connections: PB0-PB5 are DAC output bits.
  */
 
 #include <stdint.h>
@@ -11,11 +11,19 @@
 #include "little.h"
 #include "SoundMacros.h"
 
+<<<<<<< HEAD
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
 uint32_t Durations[4] = {0};
 uint32_t Pitches[4] = {0};
+=======
+void DisableInterrupts(void);
+void EnableInterrupts(void);
+
+uint32_t Durations[4]     = {0};
+uint32_t Pitches[4]       = {0};
+>>>>>>> volume-experimental
 uint32_t Event_Lengths[4] = {0};
 uint32_t Event_Indices[4] = {0};
 
@@ -26,18 +34,27 @@ const Song *Channels[4] = {Channel0, Channel1, Channel2, Channel3};
 int main(void){
     uint8_t i;
     
-    TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);    // bus clock at 80 MHz
+    /* TODO: Get rid of TExaS_Init and replace with code that only sets
+     * the bus clock to 80 MHz (not auto-grader crap)
+     */
+    TExaS_Init(SW_PIN_PE3210, DAC_PIN_PB3210, ScopeOn);
     DAC_Init(); // Set up Port B
     Timers_Init(); // Start all the timers
     EnableInterrupts();
+<<<<<<< HEAD
     // Uncomment the following lines for testing tuning on high pitches
+=======
+    // Uncomment the following block of code to test tuning.
+>>>>>>> volume-experimental
     /*
     Timer0A_Init(REST);
-    pitches[0] = C7;
-    while (1) {
-    }
+    Pitches[0] = C7;
+    Pitches[1] = C7;
+    Pitches[2] = C7;
+    Pitches[3] = C7;
+    while (1) { }
     */
-    // Initialize pitches and duration (hereafter in SysTick_Handler())
+    // Initialize Pitches and duration (hereafter in SysTick_Handler())
     for (i = 0; i < 4; i++) {
         Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
         Durations[i] = Channels[i][Event_Indices[i]].duration;

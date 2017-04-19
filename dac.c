@@ -1,6 +1,6 @@
 /* dac.c
- * This software configures DAC output
- * Trey Boehm, 2017-04-17
+ * Trey Boehm, 2017-04-18
+ * Output voltages to the DAC based on the imported song header file.
  * Hardware connections: PB0-PB5 are DAC output bits
  */
 
@@ -11,18 +11,23 @@
 // Sloppy code to avoid including SoundMacros.h in two files (TODO)
 #define REST 44444
 // Subtract when reloading timers 0-3 to account for function length
-#define TUNING_OFFSET 179
+#define TUNING_OFFSET 218
 // Needed for SysTick_Init()
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 
-// These are defined in 4-channel-audio.c
-extern uint32_t Durations[];
-extern uint32_t Pitches[];
-extern uint32_t Event_Lengths[];
-extern uint32_t Event_Indices[];
-extern uint32_t Tempo;
+void DisableInterrupts(void); // Disable interrupts
+void EnableInterrupts(void);  // Enable interrupts
+long StartCritical (void);    // previous I bit, disable interrupts
+void EndCritical(long sr);    // restore I bit to previous value
+void WaitForInterrupt(void);  // low power mode
+
+// Global variables that are defined in 4-Channel-audio.c:
+extern uint32_t Durations[];     // replaces ChannelX_duration
+extern uint32_t Pitches[];       // replaces ChannelX_pitch
+extern uint32_t Event_Lengths[]; // replaces ChannelX_count
+extern uint32_t Event_Indices[]; // replaces ChannelX_index
 
 typedef struct song_struct {
     uint32_t pitch;
@@ -31,7 +36,10 @@ typedef struct song_struct {
 extern Song* Channels[];
 
 // Pointers to the next voltage level in the wave to output
-static uint8_t WavePointers[4] = {0, 0, 0, 0};
+uint8_t Wave_Pointers[4] = {0, 0, 0, 0};
+
+// Pointers to volume levels in corresponding volume envelope
+uint8_t Volume_Pointers[4] = {2, 2, 2, 2};
 
 static const uint8_t SineWave[64] = {
     32,35,38,41,44,47,49,52,54,56,58,59,
@@ -128,16 +136,49 @@ static const uint8_t GuitarWave[64] = {
   10,12,12,12,12,12,13,16,18,21,21,21
 };
 
-//const uint8_t* waves[4] = {PulseEighthWave, PulseQuarterWave, PulseHalfWave, TriangleWave};
-//const uint8_t* waves[4] = {TriangleWave, TriangleWave, TriangleWave, TriangleWave};
-//const uint8_t* waves[4] = {OrganWave, OrganWave, OrganWave, TriangleWave};
-const uint8_t* waves[4] = {OrganWave, TrumpetWave, HornWave, TriangleWave};
+static const uint8_t* waves[4] = {OrganWave, TrumpetWave, HornWave, TriangleWave};
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
+
+/* Example volume enveope for an organ:
+ * Each array element is an unsigned 6-bit int [0..63] to reflect the 6-
+ * bit precision of the DAC. SysTick will increment an index until the
+ * sustain volume is reached. This volume is indicated by looking at [0]
+ * and interpretting that not as a volume, but as an index. Also, [1]
+ * holds the length of the array for easy access
+ */
+/*
+const uint8_t organ_volume[] = {45, // Index of sustain volume
+    52, // length of the array (1 element)
+	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, // attack (32 elements)
+	61, 59, 57, 55, 53, 51, 49, // decay (7 elements)
+	48, // sustain (1 element)
+	40, 36, 32, 28, 24, 20, 16, 12, 8, 4, 0 // release, always ends with 0 (11 elements)
+};
+*/
+
+static const uint8_t OrganVolume[] = {40, // Index of sustain volume
+    48, // length of the array (1 element)
+	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, // attack (32 elements)
+	61, 59, // decay (2 elements)
+	58, // sustain (1 element)
+    53, 48, 43, 38, 33, 28, 23, 18, 13, 8, 3, 0 // release (12 elements)
+};
+
+static const uint8_t SustainVolume[] = {2,
+    3,
+    63,63,
+    0
+};
+
+
+// Specifies which Channel is using which volume envelope
+const uint8_t* Volumes[4] = {SustainVolume, SustainVolume, SustainVolume, SustainVolume};
+const uint8_t* Waves[4]   = {FluteWave, OrganWave, HornWave, TriangleWave};
 
 void DAC_Init(void){
     uint8_t i;
@@ -151,11 +192,17 @@ void DAC_Init(void){
 
 void DAC_Out(void){
     uint8_t i;
+    int16_t tmp;
     uint16_t output = 0;
     for (i = 0; i < 4; i++) {
-        output += waves[i][WavePointers[i]];
+        tmp = Waves[i][Wave_Pointers[i]] - 31; // center wave at 0
+        tmp *= Volumes[i][Volume_Pointers[i]]; // multiply by volume
+        tmp >>= 6; // divide by 64
+        tmp += 31; // re-center at a positive 6-bit int
+        output += tmp; // add to the output
     }
-    output >>= 2;
+    output >>= 2; // divide by 4 (4 Channels)
+    
     GPIO_PORTB_DATA_R = (output&0x3F);
 }
 
@@ -182,7 +229,7 @@ void Timer0A_Handler(void) {
     TIMER0_ICR_R = TIMER_ICR_TATOCINT;
     TIMER0_CTL_R = 0x00000000;
     if (Pitches[0] != REST) {
-        WavePointers[0] = (WavePointers[0]+1) & 0x3F;
+        Wave_Pointers[0] = (Wave_Pointers[0]+1) & 0x3F;
     }
     DAC_Out();
     TIMER0_TAILR_R = Pitches[0]-TUNING_OFFSET;
@@ -212,7 +259,7 @@ void Timer1A_Handler(void) {
     TIMER1_ICR_R = TIMER_ICR_TATOCINT;
     TIMER1_CTL_R = 0x00000000;
     if (Pitches[1] != REST) {
-        WavePointers[1] = (WavePointers[1]+1) & 0x3F;
+        Wave_Pointers[1] = (Wave_Pointers[1]+1) & 0x3F;
     }
     DAC_Out();
     TIMER1_TAILR_R = Pitches[1]-TUNING_OFFSET;
@@ -232,7 +279,7 @@ void Timer2A_Init(uint32_t period) {
     TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt
     NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x80000000; // 8) priority 4
     // interrupts enabled in the main program after all devices initialized
-    // vector number 37, interrupt number 23
+    // interrupt number 23
     NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
     TIMER2_CTL_R = 0x00000001;    // 10) enable TIMER2A
     EndCritical(sr);
@@ -242,7 +289,7 @@ void Timer2A_Handler(void) {
     TIMER2_ICR_R = TIMER_ICR_TATOCINT;
     TIMER2_CTL_R = 0x00000000;
     if (Pitches[2] != REST) {
-        WavePointers[2] = (WavePointers[2]+1) & 0x3F;
+        Wave_Pointers[2] = (Wave_Pointers[2]+1) & 0x3F;
     }
     DAC_Out();
     TIMER2_TAILR_R = Pitches[2]-TUNING_OFFSET;
@@ -260,7 +307,7 @@ void Timer3A_Init(uint32_t period){
     TIMER3_IMR_R = 0x00000001;    // 7) arm timeout interrupt
     NVIC_PRI8_R = (NVIC_PRI8_R&0x00FFFFFF)|0x80000000; // 8) priority 4
     // interrupts enabled in the main program after all devices initialized
-    // vector number 51, interrupt number 35
+    // interrupt number 35
     NVIC_EN1_R = 1<<(35-32);      // 9) enable IRQ 35 in NVIC
     TIMER3_CTL_R = 0x00000001;    // 10) enable TIMER3A
 }
@@ -269,7 +316,7 @@ void Timer3A_Handler(void) {
     TIMER3_ICR_R = TIMER_ICR_TATOCINT;
     TIMER3_CTL_R = 0x00000000;
     if (Pitches[3] != REST) {
-        WavePointers[3] = (WavePointers[3]+1) & 0x3F;
+        Wave_Pointers[3] = (Wave_Pointers[3]+1) & 0x3F;
     }
     DAC_Out();
     TIMER3_TAILR_R = Pitches[3]-TUNING_OFFSET;
@@ -290,13 +337,34 @@ void SysTick_Init(uint32_t period) {
 
 void SysTick_Handler(void) {
     uint8_t i;
+    uint16_t sust_index;
+    uint16_t vol_length;
+    uint16_t decay_time;
     Song channel;
+    extern uint32_t Tempo;
     for (i = 0; i < 4; i++)  {
         Event_Lengths[i]++;
+        // check if we're at sustain volume
+        sust_index = Volumes[i][0];
+        vol_length = Volumes[i][1];
+        decay_time = vol_length - sust_index;
+        if (Event_Lengths[i] >= sust_index) {
+            // check if it's time to decay
+            if (Durations[i] - Event_Lengths[i] <= decay_time) {
+                Volume_Pointers[i]++;
+            }
+        } else {
+            // if not at sustain, just increment
+            Volume_Pointers[i]++;
+        }
+        
         if (Durations[i] - Event_Lengths[i] == 0) {
+            // Go to the next event and reset counter
             Event_Indices[i]++;
             Event_Lengths[i] = 0;
-            // Update the pitch and duration for this channel
+            // Start at the beginning of volume envelope
+            Volume_Pointers[i] = 2;
+            // Update the pitch and duration for this Channel
             Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
             Durations[i] = Channels[i][Event_Indices[i]].duration;
             switch (i) {
@@ -318,6 +386,7 @@ void SysTick_Handler(void) {
 
 
 void Timers_Init(void) {
+    extern uint32_t Tempo;
     Timer0A_Init(2800);
     Timer1A_Init(2800);
     Timer2A_Init(2800);
