@@ -10,6 +10,8 @@ void DAC_Init(void);
 void DAC_Out(void);
 
 // Define the 64x8 bit waves
+static const uint8_t NoiseWave[64] = {255};
+
 static const uint8_t SineWave[64] = {
     32,35,38,41,44,47,49,52,54,56,58,59,
     61,62,62,63,63,63,62,62,61,59,58,56,

@@ -20,6 +20,9 @@ Lab6.map
 lookup.crf
 lookup.d
 lookup.o
+noise.crf
+noise.d
+noise.o
 pll.crf
 pll.d
 pll.o
