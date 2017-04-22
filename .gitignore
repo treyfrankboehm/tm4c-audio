@@ -20,6 +20,9 @@ Lab6.map
 lookup.crf
 lookup.d
 lookup.o
+pll.crf
+pll.d
+pll.o
 sound.d
 startup.d
 startup.lst
