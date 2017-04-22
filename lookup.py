@@ -9,8 +9,10 @@ top = "\
  * Trey Boehm, 2017-04-22\n\
  * Hardware connections: None\n\
  */\n\
-\n\
-uint16_t MultLookup[64][64] = {\n\
+
+#include <stdint.h>\n\
+
+static const uint16_t MultLookup[64][64] = {\n\
 "
 f.write(top)
 for x in range(64):
@@ -28,6 +30,6 @@ for x in range(64):
     else:
         row += "},\n"
     f.write(row)
-f.write("}\n")
+f.write("};\n")
 f.close()
 exit(0)
