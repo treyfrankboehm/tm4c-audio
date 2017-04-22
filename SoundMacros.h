@@ -1,6 +1,7 @@
 /* SoundMacros.h
- * This header file contains macros defining wait times for Pitches
- * Program written by: Trey Boehm, 2017-04-03
+ * This header file contains macros defining wait times for pitches
+ * Trey Boehm, 2017-04-22
+ * Hardware connections: None
  */
 
 /* The periods and frequencies copied/pasted from Valvano's spreadsheet.
@@ -8,7 +9,10 @@
  * Each macro includes the pitch, a possible modifier, and the standard
  * octave designation. "is" indicates "sharp" and "es" indicates "flat".
  */
-#define REST    44444  // Musical silence is an exception
+#ifndef SOUND_MACROS_H
+#define SOUND_MACROS_H
+const int REST = 44444; // Musical silence is an exception
+
 #define C7      597    // 2093 Hz
 #define B6      633    // 1975.5 Hz
 #define Bes6    670    // 1864.7 Hz
@@ -103,3 +107,4 @@
 #define Cis1    36077
 #define C1      38223
 
+#endif
