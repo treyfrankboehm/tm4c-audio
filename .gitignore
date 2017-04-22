@@ -17,6 +17,9 @@ Lab6.build_log.htm
 Lab6.htm
 Lab6.lnp
 Lab6.map
+lookup.crf
+lookup.d
+lookup.o
 sound.d
 startup.d
 startup.lst
@@ -24,6 +27,6 @@ startup.o
 systickints.crf
 systickints.d
 systickints.o
-timer0a.crf
-timer0a.d
-timer0a.o
+timers.crf
+timers.d
+timers.o
