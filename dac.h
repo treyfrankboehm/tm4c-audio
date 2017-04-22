@@ -1,29 +1,139 @@
 /* dac.h
- * This software configures DAC output
- * Trey Boehm, 2017-04-17
+ * Output voltages to the DAC based on the imported song header file.
+ * Trey Boehm, 2017-04-22
  * Hardware connections: PB0-PB5 are DAC output bits
  */
 
 #include <stdint.h>
 
-// TODO: Include waves in this file?
-
 void DAC_Init(void);
 void DAC_Out(void);
 
-void Timer0A_Init(uint32_t period);
-void Timer0A_Handler(void);
+// Define the 64x8 bit waves
+static const uint8_t SineWave[64] = {
+    32,35,38,41,44,47,49,52,54,56,58,59,
+    61,62,62,63,63,63,62,62,61,59,58,56,
+    54,52,49,47,44,41,38,35,32,29,26,23,
+    20,17,15,12,10,8,6,5,3,2,2,1,1,1,2,
+    2,3,5,6,8,10,12,15,17,20,23,26,29
+};
 
-void Timer1A_Init(uint32_t period);
-void Timer1A_Handler(void);
+static const uint8_t SawtoothWave[64] = {
+    0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
+    17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+    33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,
+    49,50,51,52,53,54,55,56,57,58,59,60,61,62,63
+};
 
-void Timer2A_Init(uint32_t period);
-void Timer2A_Handler(void);
+static const uint8_t TriangleWave[64] = {
+    32,34,36,38,40,42,44,48,50,52,54,56,58,60,62,63,
+    62,60,58,56,54,52,50,48,46,44,42,40,38,36,34,32,
+    30,28,26,24,22,20,18,16,14,12,10,8,6,4,2,0,
+    2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32
+};
 
-void Timer3A_Init(uint32_t period);
-void Timer3A_Handler(void);
+static const uint8_t PulseEighthWave[64] = {
+    63,63,63,63,63,63,63,63,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
 
-void SysTick_Init(uint32_t period);
-void SysTick_Handler(void);
+static const uint8_t PulseQuarterWave[64] = {
+    63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
 
-void Timers_Init(void);
+static const uint8_t PulseHalfWave[64] = {
+    63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,
+    63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+
+static const uint8_t OrganWave[64] = {
+    31,36,41,46,50,54,57,60,62,63,63,63,61,60,57,54,
+    51,47,43,40,36,33,29,27,25,23,22,21,21,22,23,24,
+    26,27,29,31,32,33,34,34,34,34,33,31,29,26,24,21,
+    18,15,12,10,8,6,5,5,6,7,9,11,14,18,22,27
+};
+
+static const uint8_t HornWave[64] = {
+  30,30,31,32,33,36,40,50,60,61,63,
+  52,40,28,15,13,10,10,10,11,12,13,
+  14,15,16,18,19,24,29,31,33,35,
+  37,40,43,46,49,51,53,50,47,51,
+  55,50,45,38,31,22,13,8,4,2,
+  0,1,2,4,6,9,12,14,17,22,26,28
+};
+
+static const uint8_t TrumpetWave[64] = {
+  48,49,50,51,52,53,53,52,49,45,41,
+  33,25,21,20,25,41,52,61,63,63,58,
+  53,51,49,49,49,49,50,50,49,49,
+  48,48,48,48,49,49,49,49,48,48,
+  48,48,49,50,51,51,50,50,50,50,
+  50,50,51,50,50,50,49,48,48,48,49,48
+};
+
+static const uint8_t BassoonWave[64] = {
+  31,35,35,35,33,33,32,31,29,27,26,
+  27,31,42,58,63,52,29,9,0,1,6,
+  13,20,30,39,45,47,43,36,28,21,
+  14,9,7,11,20,30,38,41,38,30,
+  24,21,21,22,22,22,24,26,28,29,
+  30,32,35,37,36,33,32,32,32,31,29,28
+};
+
+static const uint8_t FluteWave[64] = {
+  25,31,36,39,42,46,50,54,57,59,62,
+  62,63,62,62,59,56,53,51,47,43,39,
+  35,32,29,27,25,23,21,20,20,19,
+  17,18,18,17,16,15,15,14,13,12,
+  10,8,6,5,4,3,2,2,1,1,
+  2,3,3,5,6,8,9,12,14,16,19,22
+};
+
+static const uint8_t GuitarWave[64] = {
+  21,21,21,19,16,11,6,1,0,2,8,
+  17,28,37,43,46,48,45,40,32,22,12,
+  7,7,13,24,38,51,60,63,59,51,
+  43,34,28,24,22,21,21,21,23,27,
+  29,32,33,32,29,23,18,12,10,8,
+  10,12,12,12,12,12,13,16,18,21,21,21
+};
+
+// Define the volume envelopes
+/* Each array element is an unsigned 6-bit int [0..63] to reflect the 6-
+ * bit precision of the DAC. SysTick will increment an index until the
+ * sustain volume is reached. This volume is indicated by looking at [0]
+ * and interpretting that not as a volume, but as an index. Also, [1]
+ * holds the length of the array for easy access
+ * Example volume enveope for an organ:
+ */
+/*
+const uint8_t organ_volume[] = {45, // Index of sustain volume
+    52, // length of the array (1 element)
+	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, // attack (32 elements)
+	61, 59, 57, 55, 53, 51, 49, // decay (7 elements)
+	48, // sustain (1 element)
+	40, 36, 32, 28, 24, 20, 16, 12, 8, 4, 0 // release, always ends with 0 (11 elements)
+};
+*/
+
+static const uint8_t OrganVolume[] = {40, // Index of sustain volume
+    48, // length of the array (1 element)
+	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, // attack (32 elements)
+	61, 59, // decay (2 elements)
+	58, // sustain (1 element)
+    53, 48, 43, 38, 33, 28, 23, 18, 13, 8, 3, 0 // release (12 elements)
+};
+
+static const uint8_t SustainVolume[] = {2,
+    3,
+    63,63,
+    0
+};
+

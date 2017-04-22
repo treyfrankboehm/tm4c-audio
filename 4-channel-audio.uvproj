@@ -440,6 +440,16 @@
               <FileType>5</FileType>
               <FilePath>.\tm4c123gh6pm.h</FilePath>
             </File>
+            <File>
+              <FileName>lookup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lookup.c</FilePath>
+            </File>
+            <File>
+              <FileName>lookup.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lookup.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

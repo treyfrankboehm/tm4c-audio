@@ -21,9 +21,9 @@
  http://users.ece.utexas.edu/~valvano/
  */
  
-#include "PLL.h"
 #include <stdint.h>
-#include "inc/tm4c123gh6pm.h"
+#include "tm4c123gh6pm.h"
+#include "pll.h"
 
 // The #define statement SYSDIV2 in PLL.h
 // initializes the PLL to the desired frequency.

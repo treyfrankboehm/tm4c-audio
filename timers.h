@@ -20,4 +20,3 @@ void Timer3A_Handler(void);
 
 void SysTick_Init(uint32_t period);
 void SysTick_Handler(void);
-

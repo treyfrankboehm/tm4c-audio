@@ -16,8 +16,28 @@
 // Subtract this when reloading TAIL_R to account for ISR length
 #define TUNING_OFFSET 60
 
-extern uint8_t Wave_Pointers[4];
-extern uint8_t Pitches[4];
+// Global variables that are defined in 4-channel-audio.c:
+extern uint32_t Durations[4];
+extern uint32_t Pitches[4];
+extern uint32_t Event_Lengths[4];
+extern uint32_t Event_Indices[4];
+extern uint32_t Tempo;
+
+// Global variables that are defined in dac.c:
+extern uint8_t  Wave_Pointers[4];
+extern uint8_t  Volume_Pointers[4];
+extern uint8_t* Waves[4];
+extern uint8_t* Volumes[4];
+
+// Global variable defined in SoundMacros.h
+extern uint32_t REST;
+
+typedef struct song_struct {
+    uint32_t pitch;
+    uint32_t duration;
+} Song;
+extern Song* Channels[];
+
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -156,7 +176,6 @@ void SysTick_Handler(void) {
     uint16_t vol_length;
     uint16_t decay_time;
     Song channel;
-    extern uint32_t Tempo;
     for (i = 0; i < 4; i++)  {
         Event_Lengths[i]++;
         // check if we're at sustain volume
@@ -200,11 +219,3 @@ void SysTick_Handler(void) {
     // SysTick automatically acknowledges the ISR completion
 }
 
-void Timers_Init(void) {
-    extern uint32_t Tempo;
-    Timer0A_Init(2800);
-    Timer1A_Init(2800);
-    Timer2A_Init(2800);
-    Timer3A_Init(2800);
-    SysTick_Init(Tempo);
-}
