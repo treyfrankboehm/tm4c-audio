@@ -11,19 +11,11 @@
 #include "little.h"
 #include "SoundMacros.h"
 
-<<<<<<< HEAD
-void DisableInterrupts(void); // Disable interrupts
-void EnableInterrupts(void);  // Enable interrupts
-
-uint32_t Durations[4] = {0};
-uint32_t Pitches[4] = {0};
-=======
 void DisableInterrupts(void);
 void EnableInterrupts(void);
 
 uint32_t Durations[4]     = {0};
 uint32_t Pitches[4]       = {0};
->>>>>>> volume-experimental
 uint32_t Event_Lengths[4] = {0};
 uint32_t Event_Indices[4] = {0};
 
@@ -41,11 +33,7 @@ int main(void){
     DAC_Init(); // Set up Port B
     Timers_Init(); // Start all the timers
     EnableInterrupts();
-<<<<<<< HEAD
     // Uncomment the following lines for testing tuning on high pitches
-=======
-    // Uncomment the following block of code to test tuning.
->>>>>>> volume-experimental
     /*
     Timer0A_Init(REST);
     Pitches[0] = C7;
