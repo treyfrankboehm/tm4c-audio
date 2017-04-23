@@ -420,6 +420,4 @@ void Output_On(void);
 // Output: none
 void Output_Color(uint32_t newColor); 
 
-void LCD_OutDec(uint32_t data);  // output to LCD
-
 #endif
