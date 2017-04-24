@@ -23,12 +23,12 @@ for row in midiCSV:
     for item in range(len(row)):
         row[item] = re.sub(' ', '', row[item])
 
-# Find the tempo
-tempo = 0
+# Find the tempo[s]
+tempos = []
 for row in midiCSV:
     if "Tempo" in row:
-        tempo = int(row[3])
-        break
+        # Add the tempo and the time at which that tempo starts
+        tempos.append([int(row[1]), int(row[3])])
 
 # Remove non-note events
 i = 0
@@ -40,26 +40,20 @@ while 1:
     else:
         i += 1
 
-# [channel, time, note]
+# [channel, time, note, volume]
 for i in range(len(midiCSV)):
     midiCSV[i] = [ int(midiCSV[i][0]),
                    int(midiCSV[i][1]),
-                   int(midiCSV[i][4]) ]
+                   int(midiCSV[i][4]), 
+                   int(midiCSV[i][5]) ]
 
 # Give each event a length instead of start and stop. This means that
 # rests will be their own event. I give them a pitch of 0. mStruct is 
 # the data that will be formatted and written to a header file to be
-# played with the DAC, formatted into 5 different structs (for the
+# played with the DAC, formatted into 4 different structs (for the
 # different channels). pitch is exactly as it is formatted in the
 # Sound.c file (A4, Ais4, B5, etc) and duration is a period that can be
 # supplied as-is. Tempo is taken into account here, too.
-f2 = open("shit", 'w')
-for row in midiCSV:
-    for item in row:
-        f2.write(str(item))
-        f2.write(' ')
-    f2.write('\n')
-f2.close()
 mStruct = [ [], [], [], [], [] ]
 for i in range(0,len(midiCSV)-1,2):
     channel   = midiCSV[i][0] - 2
@@ -69,15 +63,16 @@ for i in range(0,len(midiCSV)-1,2):
     endTime   = midiCSV[i+1][1]
     duration  = endTime - startTime
     track     = midiCSV[i][0]
+    volume    = midiCSV[i][3]
 
     # Check if the first event of a channel is a rest
     if prevChan != channel and startTime != 0:
-        mStruct[channel].append([macroNums[0], startTime])
+        mStruct[channel].append([macroNums[0], startTime, volume])
     
     if duration == 0:
         print(channel, pitch, track, i)
 
-    mStruct[channel].append([macroNums[pitch], duration])
+    mStruct[channel].append([macroNums[pitch], duration, volume])
 
     # Check if a rest happens
     if i < len(midiCSV) - 2: # not yet at the last item
@@ -85,7 +80,9 @@ for i in range(0,len(midiCSV)-1,2):
         nextTime = midiCSV[i+2][1]
         rest     = nextTime - endTime
         if nextChan == channel and rest:
-            mStruct[channel].append([macroNums[0], rest])
+            mStruct[channel].append([macroNums[0], rest, volume])
+
+f = open("%s.h" % filename, 'w')
 
 head = ("\
 /* %s.h: .midi -> .csv -> C struct\n\
@@ -93,24 +90,40 @@ head = ("\
  */\n\
 \n\
 #include \"SoundMacros.h\"\n\
-\n\
-#define TEMPO %d\n\
+\n")
+f.write(head)
+
+struct_defs = "\
 \n\
 typedef struct song_struct {\n\
-    uint32_t pitch;\n\
-    uint32_t duration;\n\
+    uint16_t pitch;\n\
+    uint16_t duration;\n\
+    uint8_t volume;\n\
 } Song;\n\
 \n\
-" % (filename, tempo))
-f = open("%s.h" % filename, 'w')
-f.write(head)
+typedef struct tempo_struct {\n\
+    uint32_t time;\n\
+    uint32_t tempo;\n\
+} Tempo_Times;\n\
+\n\
+" 
+f.write(struct_defs)
+tempo_arr = "const Tempo_Times Tempos = {\n"
+for i in range(len(tempos)):
+    tempo_arr += "\t{%d, %d}" % (tempos[i][0], tempos[i][1])
+    if i != len(tempos):
+        tempo_arr += ","
+    tempo_arr += "\n"
+tempo_arr += "};\n\n"
+f.write(tempo_arr)
+
 for i in range(len(mStruct)):
     eventCount = len(mStruct[i])
     if eventCount != 0:
         f.write("\nconst Song Channel%d = {\n" % i)
         for j in range(eventCount):
-            f.write("\t{%s, %d},\n" %
-                    (mStruct[i][j][0], mStruct[i][j][1]))
+            f.write("\t{%s, %d, %d},\n" %
+                (mStruct[i][j][0], mStruct[i][j][1], mStruct[i][j][2]))
         f.write("\t{0, 0}\n};\n")
 f.write("\n")
 f.close()
