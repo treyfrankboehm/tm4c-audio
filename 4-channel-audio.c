@@ -20,8 +20,6 @@ uint32_t Pitches[4]       = {0};
 uint32_t Event_Lengths[4] = {0};
 uint32_t Event_Indices[4] = {0};
 
-uint32_t Tempo = TEMPO/5;
-
 const Song *Channels[4] = {Channel0, Channel1, Channel2, Channel3};
 
 int main(void){
@@ -33,7 +31,7 @@ int main(void){
     Timer1A_Init(A4);
     Timer2A_Init(A4);
     Timer3A_Init(A4);
-    SysTick_Init(Tempo); // SysTick updates MIDI event number
+    SysTick_Init(Tempos[0].tempo/5); // SysTick updates MIDI event number
     EnableInterrupts();  // Each timer has an ISR associated with it
     // Initialize pitches and durations (hereafter done in SysTick)
     for (i = 0; i < 4; i++) {

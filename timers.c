@@ -21,7 +21,6 @@ extern uint32_t Durations[4];
 extern uint32_t Pitches[4];
 extern uint32_t Event_Lengths[4];
 extern uint32_t Event_Indices[4];
-extern uint32_t Tempo;
 
 // Global variables that are defined in dac.c:
 extern uint8_t  Wave_Pointers[4];
@@ -33,11 +32,20 @@ extern uint8_t* Volumes[4];
 extern uint32_t REST;
 
 typedef struct song_struct {
-    uint32_t pitch;
-    uint32_t duration;
+    uint16_t pitch;
+    uint16_t duration;
+    uint8_t volume;
 } Song;
 extern Song* Channels[];
 
+typedef struct tempo_struct {
+    uint32_t time;
+    uint32_t tempo;
+} Tempo_Times;
+extern Tempo_Times* Tempos[];
+
+uint32_t Tempo_Index = 0;
+uint32_t MIDI_Time   = 0;
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -172,9 +180,11 @@ void SysTick_Init(uint32_t period) {
 
 void SysTick_Handler(void) {
     uint8_t i;
-    uint16_t sust_index;
-    uint16_t vol_length;
-    uint16_t decay_time;
+    uint32_t sust_index;
+    uint32_t vol_length;
+    uint32_t decay_time;
+    uint32_t time;
+    uint32_t tempo;
     Song channel;
     for (i = 0; i < 4; i++)  {
         Event_Lengths[i]++;
@@ -214,7 +224,15 @@ void SysTick_Handler(void) {
             Event_Indices[i] = 0;
         }
     }
-    NVIC_ST_RELOAD_R = Tempo;
+    // Check if a new tempo is needed
+    time = Tempos[Tempo_Index].time;
+    MIDI_Time++;
+    if (MIDI_Time == time) {
+        Tempo_Index++;
+    }
+    tempo = Tempos[Tempo_Index].tempo;
+
+    NVIC_ST_RELOAD_R = tempo;
     NVIC_ST_CURRENT_R = 0;
     // SysTick automatically acknowledges the ISR completion
 }
