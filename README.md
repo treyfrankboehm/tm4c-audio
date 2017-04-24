@@ -4,6 +4,7 @@
 
 ## To-do:
 * Improve volume envelopes to make more realistic instruments (try to implement one cymbal and one drum before merging with master).
+* Allow multiple tempos per song (possibly this branch)
 * Each MIDI event (note) specifies its relative volume (not this branch).
 * Generate a noise signal to use with percussive sounds (this branch).
 * Make a way to handle multiple songs (instead of Channel0, Channel1... have each `.h` file name `filename-Channel0` or whatever the case may be. Then have pointers to those that can be reassigned instead of referring directly to them. Not this branch).
