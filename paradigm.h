@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Trey Boehm
  */
 
-#include "SoundMacros.h"
+#include "pitch_macros.h"
 #include "custom_types.h"
 
 const Tempo_Times Tempos[] = {

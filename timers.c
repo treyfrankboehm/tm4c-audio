@@ -30,7 +30,7 @@ extern uint8_t  Volume_Pointers[4];
 extern uint8_t* Waves[4];
 extern uint8_t* Volumes[4];
 
-// Global variable defined in SoundMacros.h
+// Global variable defined in pitch_macros.h
 extern int REST;
 
 extern Song* Channels[];

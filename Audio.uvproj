@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>4-channel-audio</TargetName>
+      <TargetName>Audio Target</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
@@ -45,7 +45,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>Lab6</OutputName>
+          <OutputName>Audio</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -403,7 +403,7 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>Source</GroupName>
+          <GroupName>Audio Source</GroupName>
           <Files>
             <File>
               <FileName>startup.s</FileName>
@@ -416,19 +416,9 @@
               <FilePath>.\dac.c</FilePath>
             </File>
             <File>
-              <FileName>4-channel-audio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\4-channel-audio.c</FilePath>
-            </File>
-            <File>
               <FileName>dac.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\dac.h</FilePath>
-            </File>
-            <File>
-              <FileName>SoundMacros.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\SoundMacros.h</FilePath>
             </File>
             <File>
               <FileName>tm4c123gh6pm.h</FileName>
@@ -480,10 +470,17 @@
               <FileType>5</FileType>
               <FilePath>.\percussion.h</FilePath>
             </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>pitch_macros.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\pitch_macros.h</FilePath>
+            </File>
           </Files>
-        </Group>
-        <Group>
-          <GroupName>Object code</GroupName>
         </Group>
       </Groups>
     </Target>

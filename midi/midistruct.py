@@ -89,7 +89,7 @@ head = ("\
  * Copyright (c) 2017 Trey Boehm\n\
  */\n\
 \n\
-#include \"SoundMacros.h\"\n\
+#include \"pitch_macros.h\"\n\
 #include \"custom_types.h\"\n\
 \n")
 f.write(head)
