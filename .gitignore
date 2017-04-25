@@ -23,6 +23,9 @@ lookup.o
 noise.crf
 noise.d
 noise.o
+percussion.crf
+percussion.d
+percussion.o
 pll.crf
 pll.d
 pll.o

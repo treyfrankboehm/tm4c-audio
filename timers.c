@@ -1,12 +1,14 @@
 /* timers.c
- * Initialize timers 0A, 1A, 2A, 3A and define ISRs
- * Trey Boehm, 2017-04-22
+ * Initialize timers 0A, 1A, 2A, 3A, SysTick and define ISRs
+ * Trey Boehm, 2017-04-24
  * Hardware connections: None
  */
 
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "timers.h"
+#include "custom_types.h"
+#include "percussion.h"
 
 // SysTick_Init() uses these
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
@@ -29,20 +31,10 @@ extern uint8_t* Waves[4];
 extern uint8_t* Volumes[4];
 
 // Global variable defined in SoundMacros.h
-extern uint32_t REST;
+extern int REST;
 
-typedef struct song_struct {
-    uint16_t pitch;
-    uint16_t duration;
-    uint8_t volume;
-} Song;
 extern Song* Channels[];
-
-typedef struct tempo_struct {
-    uint32_t time;
-    uint32_t tempo;
-} Tempo_Times;
-extern Tempo_Times* Tempos[];
+extern Tempo_Times Tempos[];
 
 uint32_t Tempo_Index = 0;
 uint32_t MIDI_Time   = 0;
@@ -162,7 +154,8 @@ void Timer3A_Handler(void) {
     if (Pitches[3] != REST) {
         Wave_Pointers[3] = (Wave_Pointers[3]+1) & 0x3F;
     }
-    TIMER3_TAILR_R = Pitches[3]-TUNING_OFFSET;
+    //TIMER3_TAILR_R = Pitches[3]-TUNING_OFFSET;
+    TIMER3_TAILR_R = Percussion_Period(); // Percussive instruments are often untuned
     TIMER3_CTL_R = 0x00000001;
 }
 
@@ -188,8 +181,20 @@ void SysTick_Handler(void) {
     Song channel;
     for (i = 0; i < 4; i++)  {
         Event_Lengths[i]++;
-        // check if we're at sustain volume
         
+        // Check if we're at the end of the song (start over)
+        channel = Channels[i][Event_Indices[i]];
+        if (channel.duration == 0 && channel.pitch == 0) {
+            Event_Indices[i] = 0;
+            Event_Lengths[i] = 0;
+            MIDI_Time = 0;
+            Tempo_Index = 0;
+            Volume_Pointers[i] = 2;
+            Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
+            Durations[i] = Channels[i][Event_Indices[i]].duration;
+        }
+        
+        // check if we're at sustain volume
         sust_index = Volumes[i][0];
         vol_length = Volumes[i][1];
         decay_time = vol_length - sust_index;
@@ -203,7 +208,7 @@ void SysTick_Handler(void) {
             Volume_Pointers[i]++;
         }
         
-        if (Durations[i] - Event_Lengths[i] == 0) {
+        if (Durations[i] - Event_Lengths[i] <= 0) {
             // Go to the next event and reset counter
             Event_Indices[i]++;
             Event_Lengths[i] = 0;
@@ -219,18 +224,14 @@ void SysTick_Handler(void) {
                 case 3: Timer3A_Handler();
             }
         }
-        channel = Channels[i][Event_Indices[i]];
-        if (channel.duration == 0 && channel.pitch == 0) {
-            Event_Indices[i] = 0;
-        }
     }
     // Check if a new tempo is needed
-    time = Tempos[Tempo_Index].time;
+    time = Tempos[Tempo_Index+1].time;
     MIDI_Time++;
     if (MIDI_Time == time) {
         Tempo_Index++;
     }
-    tempo = Tempos[Tempo_Index].tempo;
+    tempo = Tempos[Tempo_Index].tempo/5;
 
     NVIC_ST_RELOAD_R = tempo;
     NVIC_ST_CURRENT_R = 0;

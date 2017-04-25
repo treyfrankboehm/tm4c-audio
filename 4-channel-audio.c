@@ -1,6 +1,6 @@
 /* 4-channel-audio.c
  * This file initializes and runs the timers that run through the MIDI.
- * Trey Boehm, 2017-04-22
+ * Trey Boehm, 2017-04-24
  * Hardware connections: PB0-PB5 are DAC output bits.
  */
 
@@ -8,9 +8,9 @@
 #include "tm4c123gh6pm.h"
 #include "pll.h"
 #include "dac.h"
-#include "little.h"
+#include "paradigm.h"
 #include "timers.h"
-#include "SoundMacros.h"
+#include "custom_types.h"
 
 void DisableInterrupts(void);
 void EnableInterrupts(void);
@@ -20,9 +20,10 @@ uint32_t Pitches[4]       = {0};
 uint32_t Event_Lengths[4] = {0};
 uint32_t Event_Indices[4] = {0};
 
-const Song *Channels[4] = {Channel0, Channel1, Channel2, Channel3};
+//const Song *Channels[4] = {Channel0, Channel1, Channel2, Channel3};
+const Song *Channels[] = {Channel0, Channel1, Channel2, Channel3};
 
-int main(void){
+int main(void) {
     uint8_t i;
     
     PLL_Init();          // Bus clock at 80 MHz

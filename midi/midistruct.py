@@ -90,6 +90,7 @@ head = ("\
  */\n\
 \n\
 #include \"SoundMacros.h\"\n\
+#include \"custom_types.h\"\n\
 \n")
 f.write(head)
 

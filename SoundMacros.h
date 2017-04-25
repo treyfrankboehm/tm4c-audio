@@ -10,9 +10,26 @@
  * octave designation. "is" indicates "sharp" and "es" indicates "flat".
  */
 #ifndef SOUND_MACROS_H
-#define SOUND_MACROS_H
+#define SOUND_MACROS_H 1
 const int REST = 44444; // Musical silence is an exception
 
+#define C8      299    // 4186 Hz
+#define B7      316    // 3951.1 Hz
+#define Bes7    335    // 3729.3 Hz
+#define Ais7    335    // 3729.3 Hz
+#define A7      355    // 3520 Hz
+#define Aes7    376    // 3322.4 Hz
+#define Gis7    376    // 3322.4 Hz
+#define G7      399    // 3136 Hz
+#define Ges7    422    // 2960 Hz
+#define Fis7    422    // 2960 Hz
+#define F7      447    // 2793.8 Hz
+#define E7      474    // 2637 Hz
+#define Ees7    502    // 2489 Hz
+#define Dis7    502    // 2489 Hz
+#define D7      532    // 2349.3 Hz
+#define Des7    564    // 2217.5 Hz
+#define Cis7    564    // 2217.5 Hz
 #define C7      597    // 2093 Hz
 #define B6      633    // 1975.5 Hz
 #define Bes6    670    // 1864.7 Hz
@@ -106,5 +123,14 @@ const int REST = 44444; // Musical silence is an exception
 #define D1      34052
 #define Cis1    36077
 #define C1      38223
+
+// Percussion macros (MIDI just uses pitches for different instruments)
+#define SNARE D3
+#define BASS_DRUM C3
+#define HI_HAT_PEDAL Gis3
+#define TOM_HIGH D4
+#define TOM_MID_HIGH C4
+#define TOM_MID_LOW B3
+
 
 #endif

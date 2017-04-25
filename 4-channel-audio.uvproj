@@ -466,14 +466,19 @@
               <FilePath>.\pll.h</FilePath>
             </File>
             <File>
-              <FileName>noise.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\noise.c</FilePath>
+              <FileName>paradigm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\paradigm.h</FilePath>
             </File>
             <File>
-              <FileName>noise.h</FileName>
+              <FileName>percussion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\percussion.c</FilePath>
+            </File>
+            <File>
+              <FileName>percussion.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\noise.h</FilePath>
+              <FilePath>.\percussion.h</FilePath>
             </File>
           </Files>
         </Group>
