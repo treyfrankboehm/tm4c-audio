@@ -57,9 +57,9 @@ uint32_t ADC_In(void) {
 uint8_t Read_Cursor_Level(void) {
     uint32_t level = ADC_In();
     if (level < CURSOR_LEVEL_1) {
-        return 1;
-    } else if (level > CURSOR_LEVEL_2) {
         return 3;
+    } else if (level > CURSOR_LEVEL_2) {
+        return 1;
     } else {
         return 2; // Must be between (1) and (3)
     }
