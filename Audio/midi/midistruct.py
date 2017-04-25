@@ -94,21 +94,6 @@ head = ("\
 \n")
 f.write(head)
 
-struct_defs = "\
-\n\
-typedef struct song_struct {\n\
-    uint16_t pitch;\n\
-    uint16_t duration;\n\
-    uint8_t volume;\n\
-} Song;\n\
-\n\
-typedef struct tempo_struct {\n\
-    uint32_t time;\n\
-    uint32_t tempo;\n\
-} Tempo_Times;\n\
-\n\
-" 
-f.write(struct_defs)
 tempo_arr = "const Tempo_Times Tempos = {\n"
 for i in range(len(tempos)):
     tempo_arr += "\t{%d, %d}" % (tempos[i][0], tempos[i][1])
