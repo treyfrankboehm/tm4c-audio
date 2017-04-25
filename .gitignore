@@ -3,6 +3,10 @@ adc.crf
 adc.d
 adc.o
 adc.o
+draw_sprite.crf
+draw_sprite.d
+draw_sprite.o
+ExtDll.iex
 Game.axf
 Game.build_log.htm
 Game.build_log.htm
