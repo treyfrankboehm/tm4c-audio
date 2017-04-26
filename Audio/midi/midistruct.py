@@ -94,7 +94,7 @@ head = ("\
 \n")
 f.write(head)
 
-tempo_arr = "const Tempo_Times Tempos = {\n"
+tempo_arr = "const Tempo_Times Tempos[] = {\n"
 for i in range(len(tempos)):
     tempo_arr += "\t{%d, %d}" % (tempos[i][0], tempos[i][1])
     if i != len(tempos):
@@ -106,7 +106,7 @@ f.write(tempo_arr)
 for i in range(len(mStruct)):
     eventCount = len(mStruct[i])
     if eventCount != 0:
-        f.write("\nconst Song Channel%d = {\n" % i)
+        f.write("\nconst Song Channel%d[] = {\n" % i)
         for j in range(eventCount):
             f.write("\t{%s, %d, %d},\n" %
                 (mStruct[i][j][0], mStruct[i][j][1], mStruct[i][j][2]))

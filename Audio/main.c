@@ -1,6 +1,6 @@
-/* 4-channel-audio.c
+/* main.c
  * This file initializes and runs the timers that run through the MIDI.
- * Trey Boehm, 2017-04-24
+ * Trey Boehm, 2017-04-25
  * Hardware connections: PB0-PB5 are DAC output bits.
  */
 
@@ -8,7 +8,8 @@
 #include "tm4c123gh6pm.h"
 #include "pll.h"
 #include "dac.h"
-#include "paradigm.h"
+//#include "paradigm.h"
+#include "yyz.h"
 #include "timers.h"
 #include "custom_types.h"
 
@@ -20,7 +21,6 @@ uint32_t Pitches[4]       = {0};
 uint32_t Event_Lengths[4] = {0};
 uint32_t Event_Indices[4] = {0};
 
-//const Song *Channels[4] = {Channel0, Channel1, Channel2, Channel3};
 const Song *Channels[] = {Channel0, Channel1, Channel2, Channel3};
 
 int main(void) {
@@ -33,12 +33,12 @@ int main(void) {
     Timer2A_Init(A4);
     Timer3A_Init(A4);
     SysTick_Init(Tempos[0].tempo/5); // SysTick updates MIDI event number
-    EnableInterrupts();  // Each timer has an ISR associated with it
     // Initialize pitches and durations (hereafter done in SysTick)
     for (i = 0; i < 4; i++) {
         Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
         Durations[i] = Channels[i][Event_Indices[i]].duration;
     }
+    EnableInterrupts();  // Each timer has an ISR associated with it
     
     while (1) {
         DAC_Out();

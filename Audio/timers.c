@@ -1,6 +1,6 @@
 /* timers.c
  * Initialize timers 0A, 1A, 2A, 3A, SysTick and define ISRs
- * Trey Boehm, 2017-04-24
+ * Trey Boehm, 2017-04-25
  * Hardware connections: None
  */
 
@@ -16,7 +16,7 @@
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 
 // Subtract this when reloading TAIL_R to account for ISR length
-#define TUNING_OFFSET 60
+#define TUNING_OFFSET 62
 
 // Global variables that are defined in 4-channel-audio.c:
 extern uint32_t Durations[4];
@@ -26,7 +26,7 @@ extern uint32_t Event_Indices[4];
 
 // Global variables that are defined in dac.c:
 extern uint8_t  Wave_Pointers[4];
-extern uint8_t  Volume_Pointers[4];
+extern uint16_t Volume_Pointers[4];
 extern uint8_t* Waves[4];
 extern uint8_t* Volumes[4];
 

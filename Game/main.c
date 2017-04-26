@@ -6,7 +6,7 @@
 #include "Draw_Sprite.h"
 
 void EnableInterrupts(void);
-void ADC_Init();
+void ADC_Init(void);
 
 int main(void) {
     uint8_t i;

@@ -10,7 +10,9 @@
 #include "Sprites\Left_Arrow.h"
 #include "Sprites\Right_Arrow.h"
 #include "Sprites\Down_Arrow.h"
+#include "Sprites\alphanumeric.h"
 #include "Draw_Sprite.h"
+
 
 void Draw_Arrow(int x, int y, int arrow_num) {
     switch (arrow_num) {
@@ -28,5 +30,13 @@ void Draw_Arrow(int x, int y, int arrow_num) {
             break;
         default:
             break;
+    }
+}
+
+void Draw_Letter(int x, int y, char letter) {
+    if (letter-0x30 < 10) { // We've got a number
+        ST7735_DrawBitmap(x, y, Alphanumerics[letter-'0'], 9, 7);
+    } else { // We've got a letter (for now -- TODO: add hyphen and period)
+        ST7735_DrawBitmap(x, y, Alphanumerics[letter-'a'+10], 11, 7);
     }
 }

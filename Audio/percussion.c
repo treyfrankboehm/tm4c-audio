@@ -1,6 +1,6 @@
 /* percussion.c
  * Handle percussion instruments as exceptions to the standard DAC rule
- * Trey Boehm, 2017-04-24
+ * Trey Boehm, 2017-04-25
  */
 
 #include <stdint.h>
@@ -14,7 +14,7 @@ extern uint32_t Event_Indices[];
 
 // Global variables that are defined in dac.c:
 extern uint8_t  Wave_Pointers[4];
-extern uint8_t  Volume_Pointers[4];
+extern uint16_t Volume_Pointers[4];
 extern uint8_t* Waves[4];
 extern uint8_t* Volumes[4];
 extern uint8_t* Percussion_ADSR[];
@@ -44,19 +44,22 @@ uint8_t Percussion_Handler(void) {
     if (instrument == 6020) { // Hi-hat
         Volumes[3] = Percussion_ADSR[0];
         dac_out = Rand6();
-        TimerReloadValue = ((Rand6() << 5)+400);
+        TimerReloadValue = ((Rand6() << 5)+600);
     } else if (instrument == 8513) { // Snare
         Volumes[3] = Percussion_ADSR[1];
         dac_out = Rand6();
-        TimerReloadValue = (Mult6(Rand6(), Rand6())+400);
+        TimerReloadValue = (Mult6(Rand6(), Rand6())+600);
     } else if (instrument == 9556) { // Bass drum
         Volumes[3] = Percussion_ADSR[2];
         dac_out = Waves[3][Wave_Pointers[3]];
-        dac_out = Mult6(dac_out, (Rand6() >> 3));
-        dac_out >>= 3;
-        TimerReloadValue = 15000;
+        //dac_out = Mult6(dac_out, (Rand6() >> 5));
+        //dac_out >>= 1;
+        TimerReloadValue = 18000;
     }
     adsr_vol = Percussion_ADSR[0][Volume_Pointers[3]];
+    if (adsr_vol == 0) {
+        Volume_Pointers[3]--; // Stay on the 0 (release) until the end
+    }
     dac_out = Mult6(dac_out, adsr_vol);
     dac_out >>= 6;
     return dac_out;

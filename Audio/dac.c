@@ -1,6 +1,6 @@
 /* dac.c
  * Output voltages to the DAC based on the imported song header file.
- * Trey Boehm, 2017-04-24
+ * Trey Boehm, 2017-04-25
  * Hardware connections: PB0-PB5 are DAC output bits
  */
 
@@ -19,13 +19,12 @@ extern Song* Channels[];
 // Pointers to the next voltage level in the wave to output
 uint8_t Wave_Pointers[4] = {0, 0, 0, 0};
 // Pointers to volume levels in corresponding volume envelope
-uint8_t Volume_Pointers[4] = {2, 2, 2, 2};
+uint16_t Volume_Pointers[4] = {2, 2, 2, 2};
 // Which waveform each channel is using
 const uint8_t* Waves[4]   = {Guitar_Wave_2, SineWave, SawtoothWave, SineWave};
 // Which volume envelope each channel is using
-const uint8_t* Volumes[4] = {GuitarVolume, GuitarVolume, GuitarVolume, Snare_ADSR};
+const uint8_t* Volumes[4] = {GuitarVolume, SustainVolume, GuitarVolume, Snare_ADSR};
 const uint8_t* Percussion_ADSR[] = {Snare_ADSR, HH_ADSR, BD_ADSR};
-//const uint8_t* Percussion_ADSR[] = {HH_ADSR, Snare_ADSR};
 
 void DAC_Init(void){
     uint8_t i;

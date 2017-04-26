@@ -7,3 +7,5 @@
 #include <stdint.h>
 
 void Draw_Arrow(int x, int y, int arrow_num);
+
+void Draw_Letter(int x, int y, char letter);
