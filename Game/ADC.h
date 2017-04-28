@@ -6,6 +6,12 @@
 
 #include <stdint.h>
 
+// The coordinates for the cursor at a given position
+#define CURSOR_X_POS 20
+#define CURSOR_Y_1_POS 20
+#define CURSOR_Y_2_POS 60
+#define CURSOR_Y_3_POS 100
+
 /* ADC_Init(): Initialize AIN1 for ADC0 on PE2
  * Input: none
  * Output: none

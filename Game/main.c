@@ -4,6 +4,7 @@
 #include "SysTickInts.h"
 #include "tm4c123gh6pm.h"
 #include "Draw_Sprite.h"
+#include "timers.h"
 
 void EnableInterrupts(void);
 void ADC_Init(void);
@@ -26,6 +27,7 @@ int main(void) {
     GPIO_PORTF_DIR_R |= 0x02;
     
     SysTick_Init(80000000/30);
+    Timer0A_Init(BLINK_PERIOD);
     EnableInterrupts();
     
     while (1 != 0) { ; }

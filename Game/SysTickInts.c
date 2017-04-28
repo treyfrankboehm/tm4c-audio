@@ -25,7 +25,6 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "Draw_Sprite.h"
-#include "ADC.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
@@ -53,10 +52,8 @@ void SysTick_Init(uint32_t period) {
 }
 
 void SysTick_Handler(void) {
-    int cursor_position;
     GPIO_PORTF_DATA_R ^= 0x02;
-    cursor_position = Read_Cursor_Level()*40-20;
-    Draw_Arrow(cursor_position, 50, 1);
+    Draw_Cursor();
     //Draw_Arrow(30, y_pos, 3);
     //Draw_Arrow(30, y_pos-40, 2);
     //Draw_Arrow(90, y_pos-80, 1);
