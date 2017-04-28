@@ -10,3 +10,4 @@
 *.map
 *.o
 *.uvgui*
+*.uvopt*
