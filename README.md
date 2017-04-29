@@ -4,8 +4,8 @@ The project is split up into two different folders, "Game" and "Audio". This is 
 
 ## To-do:
 ### Game folder:
-* Make the type string function go slower so that each character can be observed entering the screen one-by-one.
-* Re-do the 'y' bitmap and add: . , - \_ ! % &
+* Make the type string function go slower so that each character can be observed entering the screen one-by-one. Test the time() loop to see if it provides the appropriate delay.
+* Check the appearance of the 'y' bitmap and . , - \_ ! % & bitmaps on the LCD.
 * Create structs and arrays that hold the "song". Each struct will probably contain a direction, cursor level, and time. The "song" array will define the speed at which they approach (one, two, or three pixels probably). The name of the song (to be displayed up top and on the selection screen) and high scores will need to be defined elsewhere and have the array associated with them.
 * Add functions for drawing each screen. Title sequence, title screen, song select, basic frame for the level, song fail, song pass, scoreboard, score entry, credits.
 ### Audio folder:
