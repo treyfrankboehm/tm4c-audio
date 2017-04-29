@@ -28,7 +28,13 @@ int main(void) {
     
     SysTick_Init(80000000/30);
     Timer0A_Init(BLINK_PERIOD);
+    Timer1A_Init(ONE_MILLISECOND);
     EnableInterrupts();
+    
+    Draw_Top_Line();
+    Draw_Bottom_Line();
+    Draw_Score();
+    Type_String(100, 7, "yyz.wav");
     
     while (1 != 0) { ; }
     

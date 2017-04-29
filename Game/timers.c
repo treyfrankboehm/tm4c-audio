@@ -13,6 +13,8 @@ void EndCritical(long sr);
 
 void Blink_Block(void);
 
+static int Type_Delay_Countdown = 0;
+
 void Timer0A_Init(uint32_t period) {
     long sr;
     sr = StartCritical(); 
@@ -62,7 +64,8 @@ void Timer1A_Init(uint32_t period) {
 void Timer1A_Handler(void) {
     TIMER1_ICR_R = TIMER_ICR_TATOCINT;
     TIMER1_CTL_R = 0x00000000;
-    TIMER1_TAILR_R = BLINK_PERIOD;
+    Type_Delay_Countdown--;
+    TIMER1_TAILR_R = ONE_MILLISECOND;
     TIMER1_CTL_R = 0x00000001;
 }
 
@@ -114,3 +117,8 @@ void Timer3A_Handler(void) {
     TIMER3_CTL_R = 0x00000001;
 }
 
+void Wait_1ms(unsigned int count) {
+    Type_Delay_Countdown = count;
+    while (Type_Delay_Countdown) { ; }
+    return;
+}

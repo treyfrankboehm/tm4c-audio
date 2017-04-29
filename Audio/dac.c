@@ -26,7 +26,7 @@ const uint8_t* Waves[4]   = {Guitar_Wave_2, SineWave, SawtoothWave, SineWave};
 const uint8_t* Volumes[4] = {GuitarVolume, SustainVolume, GuitarVolume, Snare_ADSR};
 const uint8_t* Percussion_ADSR[] = {Snare_ADSR, HH_ADSR, BD_ADSR};
 
-void DAC_Init(void){
+void DAC_Init(void) {
     uint8_t i;
     SYSCTL_RCGC2_R |= 0x02;
     for (i = 0; i < 4; i++) ; // Wait for clock to stabilize
@@ -36,11 +36,12 @@ void DAC_Init(void){
     GPIO_PORTB_DATA_R &= ~0x3F; // Start with no sound
 }
 
-void DAC_Out(void){
+void DAC_Out(void) {
     uint8_t i;   // Standard iterator
     int16_t tmp; // Used to adjust channel's output (arithmetic ops)
     int8_t sign; // Lookup table is positive numbers only
     uint16_t output = 0;
+    
     for (i = 0; i < 3; i++) { // Handle the 0-3 (non-drum) channels
         tmp = Waves[i][Wave_Pointers[i]]; // Grab the DAC level
         tmp -= 31; // Center wave at 0

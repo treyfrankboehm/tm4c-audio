@@ -14,3 +14,5 @@ uint16_t Block_X_Pos = 255;
 uint16_t Block_Y_Pos = 255;
 // Indicates whether the block was last "on" or "off" (1 or 0)
 uint8_t  Block_Status = 0;
+
+uint32_t Score = 12345;

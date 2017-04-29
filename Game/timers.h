@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #define BLINK_PERIOD 40000000
+#define ONE_MILLISECOND 50000
 
 void Timer0A_Init(uint32_t period);
 void Timer0A_Handler(void);
@@ -20,3 +21,4 @@ void Timer2A_Handler(void);
 void Timer3A_Init(uint32_t period);
 void Timer3A_Handler(void);
 
+void Wait_1ms(unsigned int count);

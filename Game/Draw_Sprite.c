@@ -5,13 +5,13 @@
  */
 
 #include <stdint.h>
-#include <time.h>
 #include "ST7735.h"
 #include "Sprites\Up_Arrow.h"
 #include "Sprites\Left_Arrow.h"
 #include "Sprites\Right_Arrow.h"
 #include "Sprites\Down_Arrow.h"
-#include "Sprites\alphanumeric.h"
+#include "Sprites\letters.h"
+#include "Sprites\symbols.h"
 #include "Draw_Sprite.h"
 #include "ADC.h"
 #include "timers.h"
@@ -22,6 +22,7 @@ extern uint8_t Last_Cursor_Level;
 extern uint16_t Block_X_Pos;
 extern uint16_t Block_Y_Pos;
 extern uint8_t  Block_Status;
+extern uint32_t Score;
 
 void Draw_Arrow(int x, int y, int arrow_num) {
     switch (arrow_num) {
@@ -43,10 +44,17 @@ void Draw_Arrow(int x, int y, int arrow_num) {
 }
 
 void Draw_Letter(int x, int y, char letter) {
-    if (letter-0x30 < 10) { // We've got a number
-        ST7735_DrawBitmap(x, y, Alphanumerics[letter-'0'], 9, 7);
-    } else { // We've got a letter (for now -- TODO: add hyphen and period)
-        ST7735_DrawBitmap(x, y, Alphanumerics[letter-'a'+10], 11, 7);
+    if (letter-'a' < 26 && letter >= 'a') { // We've got a letter
+        ST7735_DrawBitmap(x, y, Letters[letter-'a'], 11, 7);
+    } else { // Symbol or digit
+        if (letter >= '0' && letter <= '9') { // Digit (different size)
+            ST7735_DrawBitmap(x, y, Symbols[letter-'!'], 9, 7);
+        } else if (letter == '_') { // _ is far away from other symbols
+            ST7735_DrawBitmap(x, y, underscore_symbol, 11, 7);
+        }
+        else { // Symbol
+            ST7735_DrawBitmap(x, y, Symbols[letter-'!'], 11, 7);
+        }
     }
 }
 
@@ -58,7 +66,8 @@ void Type_String(int x, int y, char *str) {
         letter = str[i];
         if (letter != ' ') {
             Draw_Letter(x, y+offset, letter);
-						while (time(0) < 1);	//should delay 1 second, needs to be tested
+            // Can't use stdlib <time.h> on TM4C, using Timer1A instead
+            Wait_1ms(250);
         } else {
             ST7735_FillRect(x, y+offset-7, 11, 8, ST7735_BLACK);
         }
@@ -109,4 +118,40 @@ void Draw_Cursor(void) {
     }
     Last_Cursor_Level = cursor_level;
     // otherwise, nothing happens
+}
+
+void Draw_Top_Line(void) {
+    int i;
+    for (i = 0; i < 21; i++) {
+        Draw_Letter(93, 8*i, '-');
+    }
+    return;
+}
+
+void Draw_Bottom_Line(void) {
+    int i;
+    for (i = 0; i < 14; i++) {
+        Draw_Letter(0, 8*i, '-');
+    }
+    Draw_Letter(0, 114, 'v');
+    Draw_Letter(2, 122, '2');
+    Draw_Letter(0, 130, '.');
+    Draw_Letter(2, 138, '0');
+    for (i = 19; i < 21; i++) {
+        Draw_Letter(0, 8*i-2, '-');
+    }
+}
+
+void Draw_Score(void) {
+    // We will separate out the digits into the 10^4, 10^3, etc.
+    uint8_t digits[5] = {0};
+    uint32_t tmp_score = Score;
+    int i;
+    for (i = 0; i < 5; i++) {
+        digits[i] = tmp_score % 10;
+        tmp_score /= 10;
+    }
+    for (i = 0; i < 5; i++) {
+        Draw_Letter(118, 125+i*8, '0'+digits[4-i]);
+    }
 }
