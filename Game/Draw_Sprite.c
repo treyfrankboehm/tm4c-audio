@@ -5,6 +5,7 @@
  */
 
 #include <stdint.h>
+#include <time.h>
 #include "ST7735.h"
 #include "Sprites\Up_Arrow.h"
 #include "Sprites\Left_Arrow.h"
@@ -57,6 +58,7 @@ void Type_String(int x, int y, char *str) {
         letter = str[i];
         if (letter != ' ') {
             Draw_Letter(x, y+offset, letter);
+						while (time(0) < 1);	//should delay 1 second, needs to be tested
         } else {
             ST7735_FillRect(x, y+offset-7, 11, 8, ST7735_BLACK);
         }
