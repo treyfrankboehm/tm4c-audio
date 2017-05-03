@@ -25,3 +25,13 @@ void Success_Screen(void){
 		Wait_1ms(1500);
 		Draw_Score();
 }
+
+void Fail_Screen(void){
+		ST7735_FillScreen(0x0000);
+		Type_String(75, 40, "404 error");
+		Wait_1ms(1500);
+		Type_String(55, 30, "skill not found");
+		Wait_1ms(1500);
+		Type_String(35, 40, "try again");
+		Wait_1ms(1500);
+}

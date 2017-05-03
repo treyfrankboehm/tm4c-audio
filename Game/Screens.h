@@ -9,3 +9,5 @@
 void Selection_Screen(void);
 
 void Success_Screen(void);
+
+void Fail_Screen(void);
