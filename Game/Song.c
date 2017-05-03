@@ -17,17 +17,19 @@ extern uint8_t Last_Cursor_Level;
 extern uint32_t Score;
 
 void Song_Play(void){
+		/*	
 		struct Song
 		{
 				int arrow_num;
 				int cursor_level;
 				int time;
 		};
+		struct Song song[40];
+		*/
 		int song_arrow[40] = {0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3};
 		int song_cursorlevel[40] ={15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15}; 
 		//song_time[40] = 
-
-		struct Song song[40];
+			
 		int i;
 		int j;
 		int y_pos = 168;
@@ -38,7 +40,7 @@ void Song_Play(void){
 				int two = 1;
 				int three = 1;
 				int four = 1;
-				for( j = 0; j < 440; j++){
+				for( j = 0; j < 440; j++){		//4 arrows appear at each loo
 						if(one)
 								Draw_Arrow(song_cursorlevel[i], y_pos, song_arrow[i]);
 						if(two)
@@ -48,7 +50,7 @@ void Song_Play(void){
 						if(four)
 								Draw_Arrow(song_cursorlevel[i+3], y_pos+264, song_arrow[i+3]);
 						y_pos = (y_pos-1);
-						int cursor_level = Last_Cursor_Level;
+						int cursor_level = Last_Cursor_Level;	//sets the cursor level to an int to be compared with the arrow height
 						if(cursor_level == 1){
 								cursor_level = 15;
 						}
@@ -58,7 +60,7 @@ void Song_Play(void){
 						if(cursor_level == 3){
 								cursor_level = 75;
 						}
-						if(y_pos == 20)	{
+						if(y_pos == 20)	{					//arrow 1
 								if(cursor_level == song_cursorlevel[i])	{
 										Calculate_Score(100);
 										one = 0;
@@ -68,7 +70,7 @@ void Song_Play(void){
 								Calculate_Health(-1);
 								}
 						}
-						else if(y_pos == -68)	{
+						else if(y_pos == -68)	{		//arrow 2
 								if(cursor_level == song_cursorlevel[i+1])	{
 										Calculate_Score(100);
 										two = 0;
@@ -78,7 +80,7 @@ void Song_Play(void){
 								Calculate_Health(-1);
 								}
 						}
-						else if(y_pos == -156)	{
+						else if(y_pos == -156)	{	//arrow 3
 								if(cursor_level == song_cursorlevel[i+2])	{
 										Calculate_Score(100);
 										three = 0;
@@ -88,7 +90,7 @@ void Song_Play(void){
 								Calculate_Health(-1);
 								}
 						}
-						else if(y_pos == -244)	{
+						else if(y_pos == -244)	{	//arrow 4
 								if(cursor_level == song_cursorlevel[i+3])	{
 										Calculate_Score(100);
 										four = 0;

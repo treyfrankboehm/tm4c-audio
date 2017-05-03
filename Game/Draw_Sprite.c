@@ -160,11 +160,11 @@ void Draw_Score(void) {
 }
 
 void Draw_Health(int x, int y) {
-		ST7735_DrawBitmap(x, y, Empty_Health, 6, 52); //remove this from the Draw_Health function later, doesn't need to be redrawn every time
+		ST7735_DrawBitmap(x, y, Empty_Health, 6, 52);
 		uint8_t digits[3] = {0};
 		uint16_t tmp_health = Health * 2;
 		int i;
-		if(tmp_health == 100)	{
+		if(tmp_health == 100)	{					//3 digit case
 				for (i = 0; i < Health; i++)	{
 						ST7735_FillRect(121, 3+i, 4, 1, HAKEN_GREEN);
 				}
@@ -177,7 +177,7 @@ void Draw_Health(int x, int y) {
 						ST7735_DrawBitmap(118, 55+32, percent_symbol, 11, 7);
 				}
 		}
-		else	{
+		else	{													//2 digit case
 				for (i = 0; i < Health; i++)	{
 						ST7735_FillRect(121, 2+i, 4, 1, HAKEN_GREEN);
 				}

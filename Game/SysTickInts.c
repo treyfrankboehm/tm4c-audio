@@ -56,7 +56,6 @@ void SysTick_Init(uint32_t period) {
 void SysTick_Handler(void) {
     GPIO_PORTF_DATA_R ^= 0x02;
     Draw_Cursor();
-		//Song_Play();
     //Draw_Arrow(15, y_pos, 3);
     //Draw_Arrow(15, y_pos+120, 2);
     //Draw_Arrow(75, y_pos+120, 1);
