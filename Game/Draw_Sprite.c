@@ -6,12 +6,14 @@
 
 #include <stdint.h>
 #include "ST7735.h"
+#include "Sprites\cursor.h"
 #include "Sprites\Up_Arrow.h"
 #include "Sprites\Left_Arrow.h"
 #include "Sprites\Right_Arrow.h"
 #include "Sprites\Down_Arrow.h"
 #include "Sprites\letters.h"
 #include "Sprites\symbols.h"
+#include "Sprites\Empty_Health.h"
 #include "Draw_Sprite.h"
 #include "ADC.h"
 #include "timers.h"
@@ -23,6 +25,7 @@ extern uint16_t Block_X_Pos;
 extern uint16_t Block_Y_Pos;
 extern uint8_t  Block_Status;
 extern uint32_t Score;
+extern uint16_t Health;
 
 void Draw_Arrow(int x, int y, int arrow_num) {
     switch (arrow_num) {
@@ -100,19 +103,19 @@ void Draw_Cursor(void) {
     if (cursor_level != Last_Cursor_Level) {
         switch (cursor_level) {
             case 1:
-                ST7735_FillRect(CURSOR_Y_2_POS, CURSOR_X_POS-16, 16, 16, ST7735_BLACK);
-                ST7735_FillRect(CURSOR_Y_3_POS, CURSOR_X_POS-16, 16, 16, ST7735_BLACK);
-                ST7735_DrawBitmap(CURSOR_Y_1_POS, CURSOR_X_POS, Up_Arrow, 16, 16);
+                ST7735_FillRect(CURSOR_Y_2_POS, CURSOR_X_POS-15, 16, 16, ST7735_BLACK);
+                ST7735_FillRect(CURSOR_Y_3_POS, CURSOR_X_POS-15, 16, 16, ST7735_BLACK);
+                ST7735_DrawBitmap(CURSOR_Y_1_POS, CURSOR_X_POS, cursor, 16, 16);
                 break;
             case 2:
-                ST7735_FillRect(CURSOR_Y_1_POS, CURSOR_X_POS-16, 16, 16, ST7735_BLACK);
-                ST7735_FillRect(CURSOR_Y_3_POS, CURSOR_X_POS-16, 16, 16, ST7735_BLACK);
-                ST7735_DrawBitmap(CURSOR_Y_2_POS, CURSOR_X_POS, Up_Arrow, 16, 16);
+                ST7735_FillRect(CURSOR_Y_1_POS, CURSOR_X_POS-15, 16, 16, ST7735_BLACK);
+                ST7735_FillRect(CURSOR_Y_3_POS, CURSOR_X_POS-15, 16, 16, ST7735_BLACK);
+                ST7735_DrawBitmap(CURSOR_Y_2_POS, CURSOR_X_POS, cursor, 16, 16);
                 break;
             case 3:
-                ST7735_FillRect(CURSOR_Y_1_POS, CURSOR_X_POS-16, 16, 16, ST7735_BLACK);
-                ST7735_FillRect(CURSOR_Y_2_POS, CURSOR_X_POS-16, 16, 16, ST7735_BLACK);
-                ST7735_DrawBitmap(CURSOR_Y_3_POS, CURSOR_X_POS, Up_Arrow, 16, 16);
+                ST7735_FillRect(CURSOR_Y_1_POS, CURSOR_X_POS-15, 16, 16, ST7735_BLACK);
+                ST7735_FillRect(CURSOR_Y_2_POS, CURSOR_X_POS-15, 16, 16, ST7735_BLACK);
+                ST7735_DrawBitmap(CURSOR_Y_3_POS, CURSOR_X_POS, cursor, 16, 16);
                 break;
         }
     }
@@ -154,4 +157,41 @@ void Draw_Score(void) {
     for (i = 0; i < 5; i++) {
         Draw_Letter(118, 125+i*8, '0'+digits[4-i]);
     }
+}
+
+void Draw_Health(int x, int y) {
+		ST7735_DrawBitmap(x, y, Empty_Health, 6, 52);
+		uint8_t digits[3] = {0};
+		uint16_t tmp_health = Health;
+		int i;
+		if(tmp_health == 50)	{
+				for (i = 0; i < tmp_health; i++)	{
+						ST7735_FillRect(121, 3+i, 4, 1, HAKEN_GREEN);
+				}
+				for (i = 0; i < 3; i++){
+						tmp_health = tmp_health*2;
+						digits[i] = (tmp_health) % 10;
+						tmp_health /= 10;
+				}
+				for (i = 0; i < 3; i++)	{
+						Draw_Letter(118, 55+(3-i)*8, '0'+digits[2-i]);
+						ST7735_DrawBitmap(118, 55+32, percent_symbol, 11, 7);
+				}
+		}
+		else	{
+				for (i = 0; i < tmp_health; i++)	{
+						ST7735_FillRect(121, 2+i, 4, 1, HAKEN_GREEN);
+				}
+				for (i = 0; i < 2; i++){
+						tmp_health = tmp_health*2;
+						digits[i] = (tmp_health) % (10^i);
+						tmp_health /= 10;
+						tmp_health /=2;
+				}
+				for (i = 0; i < 2; i++)	{
+						Draw_Letter(118, 55+(2-i)*8, '0'+digits[2-i]);
+						ST7735_DrawBitmap(118, 55+24, percent_symbol, 11, 7);
+				}
+		}
+			
 }

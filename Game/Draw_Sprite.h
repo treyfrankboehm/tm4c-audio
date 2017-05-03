@@ -21,3 +21,5 @@ void Draw_Top_Line(void);
 void Draw_Bottom_Line(void);
 
 void Draw_Score(void);
+
+void Draw_Health(int x, int y);

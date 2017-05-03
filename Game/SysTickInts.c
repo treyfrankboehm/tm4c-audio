@@ -25,13 +25,14 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "Draw_Sprite.h"
+#include "Song.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 
 uint8_t x_pos = 50;
-uint8_t y_pos = 50;
+uint8_t y_pos = 140;
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -54,11 +55,12 @@ void SysTick_Init(uint32_t period) {
 void SysTick_Handler(void) {
     GPIO_PORTF_DATA_R ^= 0x02;
     Draw_Cursor();
-    //Draw_Arrow(30, y_pos, 3);
-    //Draw_Arrow(30, y_pos-40, 2);
-    //Draw_Arrow(90, y_pos-80, 1);
-    //Draw_Arrow(60, y_pos-120, 0);
-    //y_pos = (y_pos+3)%176;
+		//Song_Play();
+    //Draw_Arrow(15, y_pos, 3);
+    //Draw_Arrow(15, y_pos+120, 2);
+    //Draw_Arrow(75, y_pos+120, 1);
+    //Draw_Arrow(45, y_pos+120, 0);
+    //y_pos = (y_pos-3)%176;
     //x_pos = (x_pos+2)%144;
     NVIC_ST_CURRENT_R = 0;
     // SysTick automatically acknowledges ISR completion

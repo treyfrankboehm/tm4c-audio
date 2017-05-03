@@ -16,3 +16,5 @@ uint16_t Block_Y_Pos = 255;
 uint8_t  Block_Status = 0;
 
 uint32_t Score = 12345;
+
+uint16_t Health = 42;

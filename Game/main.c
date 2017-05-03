@@ -4,6 +4,8 @@
 #include "SysTickInts.h"
 #include "tm4c123gh6pm.h"
 #include "Draw_Sprite.h"
+#include "Calculate.h"
+#include "Song.h"
 #include "timers.h"
 
 void EnableInterrupts(void);
@@ -34,6 +36,7 @@ int main(void) {
     Draw_Top_Line();
     Draw_Bottom_Line();
     Draw_Score();
+		Draw_Health(120, 53);
     Type_String(100, 7, "yyz.wav");
     
     while (1 != 0) { ; }
