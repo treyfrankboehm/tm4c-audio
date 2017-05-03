@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include "ST7735.h"
 #include "Draw_Sprite.h"
+#include "Screens.h"
 #include "ADC.h"
 #include "timers.h"
 
@@ -22,11 +23,11 @@ void Calculate_Health(int x){
 		}
 		else if(x == -1){
 				if(Health>0){
-					Health += x;
-					Draw_Health(120,53);
+						Health += x;
+						Draw_Health(120,53);
 				}
-				//else 
-					//Fail Screen
+				else 
+						Fail_Screen();
 		}
 }
 
