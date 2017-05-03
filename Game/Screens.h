@@ -8,6 +8,10 @@
 
 void Selection_Screen(void);
 
+void Main_Screen(void);
+
 void Success_Screen(void);
 
 void Fail_Screen(void);
+
+void HighScore_Screen(void);
