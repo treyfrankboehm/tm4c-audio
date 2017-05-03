@@ -510,6 +510,11 @@
               <FileType>1</FileType>
               <FilePath>.\Song.c</FilePath>
             </File>
+            <File>
+              <FileName>Screens.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Screens.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

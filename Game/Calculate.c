@@ -11,20 +11,26 @@
 #include "timers.h"
 
 extern uint16_t Health;
+extern uint32_t Score;
 
 void Calculate_Health(int x){
-		if(x>0){
+		if(x == 1){
 				if(Health<50){
-						Health = Health + x;
+						Health += x;
 						Draw_Health(120,53);
 				}
 		}
-		else{
+		else if(x == -1){
 				if(Health>0){
-					Health = Health + x;
+					Health += x;
 					Draw_Health(120,53);
 				}
 				//else 
 					//Fail Screen
 		}
+}
+
+void Calculate_Score(int x){
+		Score += x;
+		Draw_Score();
 }

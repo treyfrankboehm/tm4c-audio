@@ -6,6 +6,7 @@
 #include "Draw_Sprite.h"
 #include "Calculate.h"
 #include "Song.h"
+#include "Screens.h"
 #include "timers.h"
 
 void EnableInterrupts(void);
@@ -33,6 +34,9 @@ int main(void) {
     Timer1A_Init(ONE_MILLISECOND);
     EnableInterrupts();
     
+		//Start Screen/Main Menu::
+		Selection_Screen();
+		
     Draw_Top_Line();
     Draw_Bottom_Line();
     Draw_Score();

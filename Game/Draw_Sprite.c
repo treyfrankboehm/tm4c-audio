@@ -173,7 +173,7 @@ void Draw_Health(int x, int y) {
 						tmp_health /= 10;
 				}
 				for (i = 0; i < 3; i++)	{
-						Draw_Letter(118, 55+(3-i)*8, '0'+digits[2-i]);
+						Draw_Letter(118, 55+(3-i)*8, '0'+digits[i]);
 						ST7735_DrawBitmap(118, 55+32, percent_symbol, 11, 7);
 				}
 		}
