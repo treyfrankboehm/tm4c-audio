@@ -160,16 +160,15 @@ void Draw_Score(void) {
 }
 
 void Draw_Health(int x, int y) {
-		ST7735_DrawBitmap(x, y, Empty_Health, 6, 52);
+		ST7735_DrawBitmap(x, y, Empty_Health, 6, 52); //remove this from the Draw_Health function later, doesn't need to be redrawn every time
 		uint8_t digits[3] = {0};
-		uint16_t tmp_health = Health;
+		uint16_t tmp_health = Health * 2;
 		int i;
-		if(tmp_health == 50)	{
-				for (i = 0; i < tmp_health; i++)	{
+		if(tmp_health == 100)	{
+				for (i = 0; i < Health; i++)	{
 						ST7735_FillRect(121, 3+i, 4, 1, HAKEN_GREEN);
 				}
 				for (i = 0; i < 3; i++){
-						tmp_health = tmp_health*2;
 						digits[i] = (tmp_health) % 10;
 						tmp_health /= 10;
 				}
@@ -179,14 +178,12 @@ void Draw_Health(int x, int y) {
 				}
 		}
 		else	{
-				for (i = 0; i < tmp_health; i++)	{
+				for (i = 0; i < Health; i++)	{
 						ST7735_FillRect(121, 2+i, 4, 1, HAKEN_GREEN);
 				}
 				for (i = 0; i < 2; i++){
-						tmp_health = tmp_health*2;
-						digits[i] = (tmp_health) % (10^i);
+						digits[i] = (tmp_health) % (10);
 						tmp_health /= 10;
-						tmp_health /=2;
 				}
 				for (i = 0; i < 2; i++)	{
 						Draw_Letter(118, 55+(2-i)*8, '0'+digits[2-i]);

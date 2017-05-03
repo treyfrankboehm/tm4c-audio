@@ -38,6 +38,7 @@ int main(void) {
     Draw_Score();
 		Draw_Health(120, 53);
     Type_String(100, 7, "yyz.wav");
+		Song_Play();
     
     while (1 != 0) { ; }
     

@@ -500,6 +500,16 @@
               <FileType>5</FileType>
               <FilePath>.\timers.h</FilePath>
             </File>
+            <File>
+              <FileName>Calculate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Calculate.c</FilePath>
+            </File>
+            <File>
+              <FileName>Song.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Song.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

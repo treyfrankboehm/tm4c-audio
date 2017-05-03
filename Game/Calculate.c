@@ -6,19 +6,25 @@
 
 #include <stdint.h>
 #include "ST7735.h"
+#include "Draw_Sprite.h"
 #include "ADC.h"
 #include "timers.h"
+
+extern uint16_t Health;
 
 void Calculate_Health(int x){
 		if(x>0){
 				if(Health<50){
 						Health = Health + x;
+						Draw_Health(120,53);
 				}
 		}
-		else
+		else{
 				if(Health>0){
 					Health = Health + x;
+					Draw_Health(120,53);
 				}
 				//else 
 					//Fail Screen
+		}
 }
