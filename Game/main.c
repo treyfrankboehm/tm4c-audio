@@ -34,13 +34,12 @@ int main(void) {
     Timer0A_Init(BLINK_PERIOD);
     Timer1A_Init(ONE_MILLISECOND);
     EnableInterrupts();
-    Buttons_Init();
-    while (1) {
-        Buttons_In();
-    }
-		//Start Screen/Main Menu::
+    //Buttons_Init();
+    //while (1) {
+    //    Buttons_In();
+    //}
 		Selection_Screen();
-		
+		Main_Screen();
     
     while (1 != 0) { ; }
     

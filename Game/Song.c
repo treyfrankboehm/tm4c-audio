@@ -17,22 +17,25 @@ extern uint8_t Last_Cursor_Level;
 extern uint32_t Score;
 
 void Song_Play(void){
-		/*	
+			
 		struct Song
 		{
 				int arrow_num;
 				int cursor_level;
 				int time;
 		};
-		struct Song song[40];
-		*/
-		int song_arrow[40] = {0,1,2,3,3,2,1,0,0,1,2,3,0,1,2,3,0,3,2,1,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3};
-		int song_cursorlevel[40] ={10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10}; 
-		//song_time[40] = 
-			
+		struct Song note[10];
+		int a;
 		int i;
 		int j;
 		int y_pos = 168;
+		for( a = 0; a < 10; a++)	{
+				Draw_Arrow(note[a].cursor_level, y_pos, note[a].arrow_num);
+		}
+		
+		int song_arrow[40] = {0,1,2,3,3,2,1,0,0,1,2,3,0,1,2,3,0,3,2,1,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3};
+		int song_cursorlevel[40] ={10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10}; 
+		//song_time[40] = 
 		
 		for( i = 0; i < 40; i++ )	{
 				y_pos = 168;
