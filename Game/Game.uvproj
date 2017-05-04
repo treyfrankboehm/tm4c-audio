@@ -170,7 +170,7 @@
             <Capability>1</Capability>
             <DriverSelection>4097</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
+          <bUseTDR>0</bUseTDR>
           <Flash2>BIN\lmidk-agdi.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -514,6 +514,16 @@
               <FileName>Screens.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Screens.c</FilePath>
+            </File>
+            <File>
+              <FileName>Buttons.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Buttons.c</FilePath>
+            </File>
+            <File>
+              <FileName>Buttons.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Buttons.h</FilePath>
             </File>
           </Files>
         </Group>
