@@ -66,15 +66,8 @@ void SysTick_Handler(void) {
         Comm_Stop();
     } else if (buttons == 1) {
         Comm_Start();
-    } else {
-        Comm_Tacet();
     }
-    //Draw_Arrow(15, y_pos, 3);
-    //Draw_Arrow(15, y_pos+120, 2);
-    //Draw_Arrow(75, y_pos+120, 1);
-    //Draw_Arrow(45, y_pos+120, 0);
-    //y_pos = (y_pos-3)%176;
-    //x_pos = (x_pos+2)%144;
+    
     NVIC_ST_CURRENT_R = 0;
     // SysTick automatically acknowledges ISR completion
 }

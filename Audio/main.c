@@ -64,11 +64,18 @@ int main(void) {
                 Durations[i] = Channels[i][Event_Indices[i]].duration;
             }
             if (communication == 2) { // Stop signal
-                SysTick_Init(Tempos[0].tempo/5);
-                //NVIC_ST_CTRL_R &= ~0x07;
+                NVIC_ST_CTRL_R = 0;
+                TIMER0_CTL_R = 0x0;
+                TIMER1_CTL_R = 0x0;
+                TIMER2_CTL_R = 0x0;
+                TIMER3_CTL_R = 0x0;
             } else {
                 // Other communication indicates [re]start }
                 SysTick_Init(Tempos[0].tempo/5);
+                Timer0A_Init(A4);
+                Timer1A_Init(A4);
+                Timer2A_Init(A4);
+                Timer3A_Init(A4);
             }
         }
 

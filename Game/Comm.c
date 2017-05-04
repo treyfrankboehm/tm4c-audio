@@ -12,6 +12,7 @@ void Comm_Init(void) {
     GPIO_PORTD_CR_R |= 0x18;
     GPIO_PORTD_DEN_R |= 0x18;
     GPIO_PORTD_DIR_R |= 0x18;
+    GPIO_PORTD_DATA_R &= ~0x18;
 }
 
 void Comm_Start(void) {
@@ -27,4 +28,3 @@ void Comm_Stop(void) {
 void Comm_Tacet(void) {
     GPIO_PORTD_DATA_R &= ~0x018;
 }
-
