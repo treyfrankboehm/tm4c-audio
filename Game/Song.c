@@ -27,7 +27,7 @@ void Song_Play(void){
 		struct Song song[40];
 		*/
 		int song_arrow[40] = {0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3};
-		int song_cursorlevel[40] ={15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15,45,75,15}; 
+		int song_cursorlevel[40] ={10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10}; 
 		//song_time[40] = 
 			
 		int i;
@@ -52,13 +52,13 @@ void Song_Play(void){
 						y_pos = (y_pos-1);
 						int cursor_level = Last_Cursor_Level;	//sets the cursor level to an int to be compared with the arrow height
 						if(cursor_level == 1){
-								cursor_level = 15;
+								cursor_level = 10;
 						}
 						if(cursor_level == 2){
-								cursor_level = 45;
+								cursor_level = 43;
 						}
 						if(cursor_level == 3){
-								cursor_level = 75;
+								cursor_level = 76;
 						}
 						if(y_pos == 20)	{					//arrow 1
 								if(cursor_level == song_cursorlevel[i])	{
