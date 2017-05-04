@@ -100,7 +100,7 @@ void Song_Play(void){
 								Calculate_Health(-1);
 								}
 						}
-						Wait_1ms(10);
+                        Wait_1ms(10);
 				}
 		}
 		Success_Screen();

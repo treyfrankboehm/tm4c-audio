@@ -525,6 +525,16 @@
               <FileType>5</FileType>
               <FilePath>.\Buttons.h</FilePath>
             </File>
+            <File>
+              <FileName>Comm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Comm.h</FilePath>
+            </File>
+            <File>
+              <FileName>Comm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Comm.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
