@@ -26,6 +26,8 @@
 #include "tm4c123gh6pm.h"
 #include "Draw_Sprite.h"
 #include "Song.h"
+#include "Buttons.h"
+#include "Comm.h"
 #include "timers.h"
 
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
@@ -54,8 +56,19 @@ void SysTick_Init(uint32_t period) {
 }
 
 void SysTick_Handler(void) {
+    uint8_t buttons;
+    
     GPIO_PORTF_DATA_R ^= 0x02;
     Draw_Cursor();
+    
+    buttons = Buttons_In();
+    if (buttons == 3) {
+        Comm_Stop();
+    } else if (buttons == 1) {
+        Comm_Start();
+    } else {
+        Comm_Tacet();
+    }
     //Draw_Arrow(15, y_pos, 3);
     //Draw_Arrow(15, y_pos+120, 2);
     //Draw_Arrow(75, y_pos+120, 1);

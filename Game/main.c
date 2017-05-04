@@ -8,6 +8,7 @@
 #include "Song.h"
 #include "Screens.h"
 #include "Buttons.h"
+#include "Comm.h"
 #include "timers.h"
 
 void EnableInterrupts(void);
@@ -15,6 +16,7 @@ void ADC_Init(void);
 
 int main(void) {
     uint8_t i;
+    uint8_t buttons;
     
     PLL_Init();
     ST7735_InitR(INITR_REDTAB);
@@ -33,15 +35,12 @@ int main(void) {
     SysTick_Init(80000000/30);
     Timer0A_Init(BLINK_PERIOD);
     Timer1A_Init(ONE_MILLISECOND);
+    Comm_Init();
+    Buttons_Init();
     EnableInterrupts();
-    //Buttons_Init();
-    //while (1) {
-    //    Buttons_In();
-    //}
-		Selection_Screen();
-		Main_Screen();
-    
-    while (1 != 0) { ; }
+
+    Selection_Screen();
+    Main_Screen();
     
     //extern const unsigned short Game_Background_4[];
     //ST7735_DrawBitmap(0, 160, Game_Background_4, 128, 160);

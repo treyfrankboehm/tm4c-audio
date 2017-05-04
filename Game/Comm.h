@@ -9,3 +9,5 @@ void Comm_Init(void);
 void Comm_Start(void);
 
 void Comm_Stop(void);
+
+void Comm_Tacet(void);

@@ -1,14 +1,11 @@
 /* Buttons.c
- * Helper functions to calculate scores, multipliers, and current status
- * Trey Boehm and Emily Steck, 2017-04-23
- * Hardware connections: Refer to ST7735_InitR() (Port A, mainly)
+ * Read input from the three buttons on the protoboard
+ * Trey Boehm and Emily Steck, 2017-05-03
+ * PD0, PD1, and PD2 are positive-logic switches
  */
  
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
-#include "ST7735.h"
-#include "ADC.h"
-#include "timers.h"
 
 void Buttons_Init(void){
     SYSCTL_RCGCGPIO_R |= 0x08; // Start the clock on port D

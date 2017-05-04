@@ -23,13 +23,13 @@ void Selection_Screen(void){
 }
 
 void Main_Screen(void)	{	
-		Draw_Top_Line();
+	Draw_Top_Line();
     Draw_Bottom_Line();
     Draw_Score();
-		Draw_Health(120, 53);
+	Draw_Health(120, 53);
     Type_String(100, 7, "yyz.wav");
-		Song_Play();
-		}
+	Song_Play();
+}
 
 void Success_Screen(void){
 		ST7735_FillScreen(0x0000);

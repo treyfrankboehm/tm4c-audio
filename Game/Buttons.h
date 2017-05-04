@@ -1,7 +1,7 @@
-/* Buttons.h
- * Helper functions to calculate scores, multipliers, and current status
- * Trey Boehm and Emily Steck, 2017-04-23
- * Hardware connections: Refer to ST7735_InitR() (Port A, mainly)
+/* Buttons.c
+ * Read input from the three buttons on the protoboard
+ * Trey Boehm and Emily Steck, 2017-05-03
+ * PD0, PD1, and PD2 are positive-logic switches
  */
 
 #include <stdint.h>

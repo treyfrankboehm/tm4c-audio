@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "timers.h"
+#include "Comm.h"
 #include "custom_types.h"
 #include "percussion.h"
 
@@ -178,21 +179,13 @@ void SysTick_Handler(void) {
     uint32_t decay_time;
     uint32_t time;
     uint32_t tempo;
+    unsigned int communication;
     Song channel;
+
+    communication = Comm_In();
+
     for (i = 0; i < 4; i++)  {
         Event_Lengths[i]++;
-        
-        // Check if we're at the end of the song (start over)
-        channel = Channels[i][Event_Indices[i]];
-        if (channel.duration == 0 && channel.pitch == 0) {
-            Event_Indices[i] = 0;
-            Event_Lengths[i] = 0;
-            MIDI_Time = 0;
-            Tempo_Index = 0;
-            Volume_Pointers[i] = 2;
-            Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
-            Durations[i] = Channels[i][Event_Indices[i]].duration;
-        }
         
         // check if we're at sustain volume
         sust_index = Volumes[i][0];

@@ -23,3 +23,8 @@ void Comm_Stop(void) {
     GPIO_PORTD_DATA_R |= 0x010;
     GPIO_PORTD_DATA_R &= ~0x08;
 }
+
+void Comm_Tacet(void) {
+    GPIO_PORTD_DATA_R &= ~0x018;
+}
+

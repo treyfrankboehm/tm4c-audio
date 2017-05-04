@@ -7,7 +7,7 @@
 #include "tm4c123gh6pm.h"
 
 void Comm_Init(void) {
-    SYSCTL_RCGC_GPIO_R |= 0x08;
+    SYSCTL_RCGCGPIO_R |= 0x08;
     while ((SYSCTL_RCGCGPIO_R & 0x08) == 0) { ; } // Stabilize
     GPIO_PORTD_CR_R |= 0x18;
     GPIO_PORTD_DEN_R |= 0x18;
