@@ -26,7 +26,7 @@ void Song_Play(void){
 		};
 		struct Song song[40];
 		*/
-		int song_arrow[40] = {0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3};
+		int song_arrow[40] = {0,1,2,3,3,2,1,0,0,1,2,3,0,1,2,3,0,3,2,1,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3};
 		int song_cursorlevel[40] ={10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10,43,76,10}; 
 		//song_time[40] = 
 			
@@ -36,8 +36,8 @@ void Song_Play(void){
 		
 		for( i = 0; i < 40; i++ )	{
 				y_pos = 168;
-				int one = 1;
-				int two = 1;
+				int one = 1;	//integers represent the 1,2,3,4 arrows in the loop
+				int two = 1;	//1 = not in contact with cursor, 0=contact with cursor
 				int three = 1;
 				int four = 1;
 				for( j = 0; j < 440; j++){		//4 arrows appear at each loo
