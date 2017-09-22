@@ -1,15 +1,18 @@
-# Lab 10: A Super-Cool Retro Rhythm Game
+# tm4c-audio: Making cool sounds and music on a TM4C microcontroller
 
-The project is split up into two different folders, "Game" and "Audio". This is because we are using two boards and it is easiest to just separate those into different Keil uVision projects. As the names suggest, Game contains everything related to drawing sprites on the LCD, moving things around, handling game logic and inputs, etc. Audio contains everything related to playing the music. This is split up like this because the rate at which the interrupt service routines run must be very predictable and being off by even a few clock cycles leads to nasty, out of tune music.
+## About
+This repo is based on code that I wrote starting with lab 6 ("Piano DAC") in EE 319K during spring 2017. I continued to develop this code substantially during the following weeks.
 
-## To-do:
-### Game folder:
-* Make the type string function go slower so that each character can be observed entering the screen one-by-one. Test the time() loop to see if it provides the appropriate delay.
-* Check the appearance of the 'y' bitmap and . , - \_ ! % & bitmaps on the LCD.
-* Create structs and arrays that hold the "song". Each struct will probably contain a direction, cursor level, and time. The "song" array will define the speed at which they approach (one, two, or three pixels probably). The name of the song (to be displayed up top and on the selection screen) and high scores will need to be defined elsewhere and have the array associated with them.
-* Add functions for drawing each screen. Title sequence, title screen, song select, basic frame for the level, song fail, song pass, scoreboard, score entry, credits.
-### Audio folder:
-* Make a way to handle multiple songs (instead of Channel0, Channel1... have each `.h` file name `filename-Channel0` or whatever the case may be. Then have pointers to those that can be reassigned instead of referring directly to them. Not this branch).
-* `cat * | grep -i 'todo'`
-## Both:
-* Communication between the boards. Probably not UART for this since we cannot arbitrarily choose which pin is Tx and which is Rx. We have two options: time-varying signals to pass along data on a single pin, or using multiple pins and high/low to represent 8 or 16 different meanings (which song is playing, for example). I lean toward the second option.
+## How it works
+First I use [Lilypond](http://lilypond.org/) to transcribe a song and create a MIDI file. I have not tested MIDIs generated with DAWs or other programs. Then I run that through a Python script I wrote. It uses the [midicsv](https://www.fourmilab.ch/webtools/midicsv/) tool to get the MIDI into a parseable format and then grabs the fields that I'm interested in. Finally it formats this in a C struct that can be used by the rest of the code. Currently the program supports 4 different events at any given time, so it works well for things like lead, guitar, bass, and percussion. The bulk of the program happens in `dac.c` and the `SysTick_Handler()` function in `timers.c`. There's a constantly running global timer that lets us run through the song and then a timer for each instrument that goes through the waveforms. The global timer (SysTick) also deals with the volume envelopes. Percussion instruments are handled in a different file that uses random number generation. All computations must be extremely fast because the processor only runs at 80 MHz. C8, for example, takes only about 300 clock cycles before it moves to the next sample!
+
+## What comes next?
+I plan to do a few things with hardware before making a bunch of big software changes. Of course, each of those will probably require another branch. The order of things is:
+1. Get the original code working with the 6-bit DAC it was designed for.
+2. Upgrade the DAC to 8-bits.
+3. Make another branch that uses the TLV 5616, a 12-bit DAC IC made by Texas Instruments that Valvano gave me.
+4. Add a way to better handle multiple songs. Perhaps even implement a way to select and play different songs using some buttons and an LCD.
+
+## Bugs
+- `cat *.c *.h | grep -Ei 'todo|fixme'`
+
