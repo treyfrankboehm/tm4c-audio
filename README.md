@@ -8,6 +8,7 @@ First I use [Lilypond](http://lilypond.org/) to transcribe a song and create a M
 
 ## What comes next?
 I plan to do a few things with hardware before making a bunch of big software changes. Of course, each of those will probably require another branch. The order of things is:
+0. Some basic housekeeping to clean up the codebase. Also figure out how to cross-compile for ARM on Linux and see if there's a JTAG programmer that will work.
 1. Get the original code working with the 6-bit DAC it was designed for.
 2. Upgrade the DAC to 8-bits.
 3. Make another branch that uses the TLV 5616, a 12-bit DAC IC made by Texas Instruments that [Valvano](http://users.ece.utexas.edu/~valvano/) gave me.

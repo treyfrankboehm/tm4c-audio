@@ -38,7 +38,7 @@ uint16_t Percussion_Period(void) {
 
 uint8_t Percussion_Handler(void) {
     uint16_t instrument = Channels[3][Event_Indices[3]].pitch;
-    uint8_t volume = Channels[3][Event_Indices[3]].volume;
+    //uint8_t volume = Channels[3][Event_Indices[3]].volume;
     uint16_t dac_out = 0;
     uint8_t adsr_vol;
     if (instrument == 6020) { // Hi-hat
