@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 #include "lookup.h"
-#include "lookup.h"
 #include "custom_types.h"
 #include "percussion.h"
 

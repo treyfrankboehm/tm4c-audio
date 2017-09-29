@@ -9,9 +9,10 @@
  * Each macro includes the pitch, a possible modifier, and the standard
  * octave designation. "is" indicates "sharp" and "es" indicates "flat".
  */
+//const int REST = 44444; // Musical silence is an exception
 #ifndef PITCH_MACROS_H
 #define PITCH_MACROS_H 1
-const int REST = 44444; // Musical silence is an exception
+#define REST 44444
 
 #define C8      299    // 4186 Hz
 #define B7      316    // 3951.1 Hz
