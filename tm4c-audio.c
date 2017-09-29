@@ -5,6 +5,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "tm4c123gh6pm.h"
 #include "pll.h"
 #include "dac.h"
@@ -12,6 +13,7 @@
 #include "yyz.h"
 #include "timers.h"
 #include "custom_types.h"
+#include "driverlib/interrupt.h"
 
 extern uint32_t Tempo_Index;
 extern uint32_t MIDI_Time;
@@ -21,8 +23,10 @@ extern uint16_t Volume_Pointers[4];
 extern uint8_t* Waves[4];
 extern uint8_t* Volumes[4];
 
-void DisableInterrupts(void);
-void EnableInterrupts(void);
+bool IntMasterEnable(void); // from driverlib/interrupt.h
+
+//void DisableInterrupts(void);
+//void EnableInterrupts(void);
 
 uint32_t Durations[4]     = {0};
 uint32_t Pitches[4]       = {0};
@@ -46,7 +50,8 @@ int main(void) {
         Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
         Durations[i] = Channels[i][Event_Indices[i]].duration;
     }
-    EnableInterrupts();  // Each timer has an ISR associated with it
+    //EnableInterrupts();  // Each timer has an ISR associated with it
+    IntMasterEnable();
     
     while (1) {
         for (i = 0; i < 4; i++) {

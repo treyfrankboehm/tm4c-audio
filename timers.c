@@ -31,7 +31,8 @@ extern uint8_t* Waves[4];
 extern uint8_t* Volumes[4];
 
 // Global variable defined in pitch_macros.h
-extern int REST;
+//extern int REST;
+const unsigned int REST = 44444;
 
 extern Song* Channels[];
 extern Tempo_Times Tempos[];
@@ -39,15 +40,15 @@ extern Tempo_Times Tempos[];
 uint32_t Tempo_Index = 0;
 uint32_t MIDI_Time   = 0;
 
-void DisableInterrupts(void); // Disable interrupts
-void EnableInterrupts(void);  // Enable interrupts
-long StartCritical (void);    // previous I bit, disable interrupts
-void EndCritical(long sr);    // restore I bit to previous value
-void WaitForInterrupt(void);  // low power mode
+//void DisableInterrupts(void); // Disable interrupts
+//void EnableInterrupts(void);  // Enable interrupts
+//long StartCritical (void);    // previous I bit, disable interrupts
+//void EndCritical(long sr);    // restore I bit to previous value
+//void WaitForInterrupt(void);  // low power mode
 
 void Timer0A_Init(uint32_t period) {
-    long sr;
-    sr = StartCritical(); 
+    //long sr;
+    //sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x01;   // 0) activate TIMER0
     TIMER0_CTL_R = 0x00000000;    // 1) disable TIMER0A during setup
     TIMER0_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -61,7 +62,7 @@ void Timer0A_Init(uint32_t period) {
     // vector number 35, interrupt number 19
     NVIC_EN0_R = 1<<19;           // 9) enable IRQ 19 in NVIC
     TIMER0_CTL_R = 0x00000001;    // 10) enable TIMER0A
-    EndCritical(sr);
+    //EndCritical(sr);
 }
 
 void Timer0A_Handler(void) {
@@ -75,8 +76,8 @@ void Timer0A_Handler(void) {
 }
 
 void Timer1A_Init(uint32_t period) {
-    long sr;
-    sr = StartCritical(); 
+    //long sr;
+    //sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
     TIMER1_CTL_R = 0x00000000;    // 1) disable TIMER1A during setup
     TIMER1_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -90,7 +91,7 @@ void Timer1A_Init(uint32_t period) {
     // vector number 37, interrupt number 21
     NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
     TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
-    EndCritical(sr);
+    //EndCritical(sr);
 }
 
 void Timer1A_Handler(void) {
@@ -104,8 +105,8 @@ void Timer1A_Handler(void) {
 }
 
 void Timer2A_Init(uint32_t period) {
-    long sr;
-    sr = StartCritical(); 
+    //long sr;
+    //sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate TIMER2
     TIMER2_CTL_R = 0x00000000;    // 1) disable TIMER2A during setup
     TIMER2_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -119,7 +120,7 @@ void Timer2A_Init(uint32_t period) {
     // interrupt number 23
     NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
     TIMER2_CTL_R = 0x00000001;    // 10) enable TIMER2A
-    EndCritical(sr);
+    //EndCritical(sr);
 }
 
 void Timer2A_Handler(void) {
@@ -160,15 +161,15 @@ void Timer3A_Handler(void) {
 }
 
 void SysTick_Init(uint32_t period) {
-    long sr;
-    sr = StartCritical();
+    //long sr;
+    //sr = StartCritical();
     NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
     NVIC_ST_RELOAD_R = period-1;// reload value
     NVIC_ST_CURRENT_R = 0;      // any write to current clears it
     NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R & 0x00FFFFFF) | 0x40000000; // priority 2
                                 // enable SysTick with core clock and interrupts
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
-    EndCritical(sr);
+    //EndCritical(sr);
 }
 
 void SysTick_Handler(void) {
