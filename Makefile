@@ -1,59 +1,94 @@
-#******************************************************************************
-#
-# Makefile - Rules for building the $(PROGRAM) example.
-#
-# Copyright (c) 2012-2017 Texas Instruments Incorporated.  All rights reserved.
-# Software License Agreement
-# 
-# Texas Instruments (TI) is supplying this software for use solely and
-# exclusively on TI's microcontroller products. The software is owned by
-# TI and/or its suppliers, and is protected under applicable copyright
-# laws. You may not combine this software with "viral" open-source
-# software in order to form a larger program.
-# 
-# THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-# NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-# NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-# CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-# DAMAGES, FOR ANY REASON WHATSOEVER.
-# 
-# This is part of revision 2.1.4.178 of the EK-TM4C123GXL Firmware Package.
-#
-#******************************************************************************
+# Makefile for a TM4C project
+# Based on the one provided by TI and the one at uctools.github.com
 
-# The name of the file to be generated
-PROGRAM = tm4c-audio
+### User configuration ###
+# TARGET: name of the target binary output file
+TARGET = tm4c-audio
+# MCU: part number to build for
+MCU = TM4C123GH6PM
+# CPU: flag for gcc and as about CPU type
+CPU = -mcpu=cortex-m4
+# FPU: floating-point options
+FPU = -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+# BUILD: directory to use for the building process
+BUILD = build
+# SRC: directory of source C, assembly, and header files
+SRC = src
+# CSRCS: list of input C source files
+CSRCS = $(shell ls $(SRC)/*.c)
+# ASMSRCS: list of input assembly source files
+ASMSRCS = $(shell ls $(SRC)/*.s)
+# TIVAWARE_PATH: path to tivaware folder
+TIVAWARE_PATH = /home/trey/etc/tiva-ware
+# LIBDRIVER: binary blob from TI :(
+LIBDRIVER = $(TIVAWARE_PATH)/driverlib/gcc/libdriver.a
 
-# The base directory for TivaWare/other include files
-IPATH=/home/trey/etc/tiva-ware
+# LD_SCRIPT: linker script
+LD_SCRIPT = $(MCU).ld
 
-include $(IPATH)/makedefs
+# flags for compiler and linker
+WFLAGS = -Wall -pedantic
+DFLAGS = -DPART_$(MCU) -g
+IFLAGS = -I$(TIVAWARE_PATH)
 
-SCATTERgcc_$(PROGRAM)=$(PROGRAM).ld
-ENTRY_$(PROGRAM)=ResetISR
-CFLAGSgcc=-DTARGET_IS_TM4C123_RB1
+CFLAGS = -mthumb $(CPU) $(FPU) $(WFLAGS) $(DFLAGS) $(IFLAGS)
+CFLAGS +=-Os -ffunction-sections -fdata-sections -MD -std=c99 -c
+LDFLAGS = -T $(LD_SCRIPT) --entry ResetISR --gc-sections
+ASMFLAGS = -mthumb $(CPU) $(FPU)
 
-# The default rule, which causes the $(PROGRAM) example to be built.
-all: $(COMPILER)
-all: $(COMPILER)/$(PROGRAM).axf
+# PREFIX: prefixes compiler, linker, assembler, archiver, objcopy
+PREFIX=arm-none-eabi
 
-# The rule to clean out all the build products.
+
+### Make Magic ###
+CC = $(PREFIX)-gcc
+LD = $(PREFIX)-ld
+AS = $(PREFIX)-as
+AR = $(PREFIX)-ar
+OBJCOPY = $(PREFIX)-objcopy
+
+LIBGCC:=$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+LIBC:=$(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
+LIBM:=$(shell $(CC) $(CFLAGS) -print-file-name=libm.a)
+
+# All object files are placed in the build directory
+# COBJS: list of object files that came from C source files
+COBJS = $(addprefix $(BUILD)/,$(notdir $(CSRCS:.c=.c.o)))
+ASMOBJS = $(addprefix $(BUILD)/,$(notdir $(ASMSRCS:.s=.s.o)))
+
+# default: build bin
+all: $(TARGET)
+
+flash: $(TARGET)
+	@echo "  lm4flash" $^
+	@lm4flash -v $(TARGET)
+
+$(BUILD)/%.c.o: $(SRC)/%.c | $(BUILD)
+	@echo "  CC  " $^
+	@$(CC) -o $@ $^ $(CFLAGS)
+
+$(BUILD)/%.s.o: $(SRC)/%.s | $(BUILD)
+	@echo "  AS  " $^
+	@$(AS) -o $@ $^ $(ASMFLAGS)
+
+# Is this really needed?
+#$(BUILD)/%.a: %.a
+#	@echo "  AR  " $^
+#	@$(AR) -cr $@ $^
+
+$(BUILD)/$(TARGET).axf: $(COBJS) $(ASMOBJS)
+	@echo "  LD  " $@
+	@$(LD) $(LDFLAGS) -o $(@) $(filter %.o %.a, $(^)) $(LIBM) $(LIBC) $(LIBGCC)
+
+$(TARGET): $(BUILD)/$(TARGET).axf
+	@echo "  OBJCOPY  " $@
+	@$(OBJCOPY) -O binary $< $@
+
+$(BUILD):
+	@mkdir $(BUILD)
+
 clean:
-	@rm -rf $(COMPILER)
-
-# The rule to create the target directory.
-$(COMPILER):
-	@mkdir -p $(COMPILER)
-
-# Rules for building the $(PROGRAM) example.
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/lookup.o
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/percussion.o
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/timers.o
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/dac.o
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/pll.o
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/$(PROGRAM).o
-$(COMPILER)/$(PROGRAM).axf: $(COMPILER)/startup.o
-$(COMPILER)/$(PROGRAM).axf: $(IPATH)/driverlib/$(COMPILER)/libdriver.a
-$(COMPILER)/$(PROGRAM).axf: $(PROGRAM).ld
+	@echo "  Cleaning"
+	@rm -rf $(BUILD)
+	@rm -f $(TARGET)
 
