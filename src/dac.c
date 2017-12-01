@@ -67,7 +67,6 @@ void DAC_Out(void) {
     // Percussion is complex enough for its own function
     output += Percussion_Handler();
     output >>= 2; // divide by 4 (4 Channels)
-    //output = Percussion_Handler();
     GPIO_PORTB_DATA_R = (output&0x3F);
 }
 
