@@ -1,12 +1,14 @@
 /* timers.c
  * Initialize timers 0A, 1A, 2A, 3A, SysTick and define ISRs
- * Trey Boehm, 2017-04-25
+ * Trey Boehm, 2017-10-01
  * Hardware connections: None
  */
 
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "timers.h"
+#include "ints.h"
+#include "leds.h"
 #include "custom_types.h"
 #include "percussion.h"
 
@@ -40,15 +42,9 @@ extern Tempo_Times Tempos[];
 uint32_t Tempo_Index = 0;
 uint32_t MIDI_Time   = 0;
 
-//void DisableInterrupts(void); // Disable interrupts
-//void EnableInterrupts(void);  // Enable interrupts
-//long StartCritical (void);    // previous I bit, disable interrupts
-//void EndCritical(long sr);    // restore I bit to previous value
-//void WaitForInterrupt(void);  // low power mode
-
 void Timer0A_Init(uint32_t period) {
-    //long sr;
-    //sr = StartCritical(); 
+    long sr;
+    sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x01;   // 0) activate TIMER0
     TIMER0_CTL_R = 0x00000000;    // 1) disable TIMER0A during setup
     TIMER0_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -62,7 +58,7 @@ void Timer0A_Init(uint32_t period) {
     // vector number 35, interrupt number 19
     NVIC_EN0_R = 1<<19;           // 9) enable IRQ 19 in NVIC
     TIMER0_CTL_R = 0x00000001;    // 10) enable TIMER0A
-    //EndCritical(sr);
+    EndCritical(sr);
 }
 
 void Timer0A_Handler(void) {
@@ -76,8 +72,8 @@ void Timer0A_Handler(void) {
 }
 
 void Timer1A_Init(uint32_t period) {
-    //long sr;
-    //sr = StartCritical(); 
+    long sr;
+    sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
     TIMER1_CTL_R = 0x00000000;    // 1) disable TIMER1A during setup
     TIMER1_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -91,7 +87,7 @@ void Timer1A_Init(uint32_t period) {
     // vector number 37, interrupt number 21
     NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
     TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
-    //EndCritical(sr);
+    EndCritical(sr);
 }
 
 void Timer1A_Handler(void) {
@@ -102,11 +98,12 @@ void Timer1A_Handler(void) {
     }
     TIMER1_TAILR_R = Pitches[1]-TUNING_OFFSET;
     TIMER1_CTL_R = 0x00000001;
+
 }
 
 void Timer2A_Init(uint32_t period) {
-    //long sr;
-    //sr = StartCritical(); 
+    long sr;
+    sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate TIMER2
     TIMER2_CTL_R = 0x00000000;    // 1) disable TIMER2A during setup
     TIMER2_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -120,7 +117,7 @@ void Timer2A_Init(uint32_t period) {
     // interrupt number 23
     NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
     TIMER2_CTL_R = 0x00000001;    // 10) enable TIMER2A
-    //EndCritical(sr);
+    EndCritical(sr);
 }
 
 void Timer2A_Handler(void) {
@@ -134,6 +131,8 @@ void Timer2A_Handler(void) {
 }
 
 void Timer3A_Init(uint32_t period){
+    long sr;
+    sr = StartCritical(); 
     SYSCTL_RCGCTIMER_R |= 0x08;   // 0) activate TIMER3
     TIMER3_CTL_R = 0x00000000;    // 1) disable TIMER3A during setup
     TIMER3_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
@@ -147,6 +146,7 @@ void Timer3A_Init(uint32_t period){
     // interrupt number 35
     NVIC_EN1_R = 1<<(35-32);      // 9) enable IRQ 35 in NVIC
     TIMER3_CTL_R = 0x00000001;    // 10) enable TIMER3A
+    EndCritical(sr);
 }
 
 void Timer3A_Handler(void) {
@@ -161,24 +161,25 @@ void Timer3A_Handler(void) {
 }
 
 void SysTick_Init(uint32_t period) {
-    //long sr;
-    //sr = StartCritical();
+    long sr;
+    sr = StartCritical();
     NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
     NVIC_ST_RELOAD_R = period-1;// reload value
     NVIC_ST_CURRENT_R = 0;      // any write to current clears it
     NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R & 0x00FFFFFF) | 0x40000000; // priority 2
                                 // enable SysTick with core clock and interrupts
     NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
-    //EndCritical(sr);
+    EndCritical(sr);
 }
 
 void SysTick_Handler(void) {
-    uint8_t i;
-    uint32_t sust_index;
-    uint32_t vol_length;
-    uint32_t decay_time;
-    uint32_t time;
-    uint32_t tempo;
+    static uint8_t i;
+    static uint32_t sust_index;
+    static uint32_t vol_length;
+    static uint32_t decay_time;
+    static uint32_t time;
+    static uint32_t tempo;
+
     //Song channel;
 
     for (i = 0; i < 4; i++)  {
@@ -208,16 +209,27 @@ void SysTick_Handler(void) {
             Pitches[i]   = Channels[i][Event_Indices[i]].pitch;
             Durations[i] = Channels[i][Event_Indices[i]].duration;
             switch (i) {
-                case 0: Timer0A_Handler();
-                case 1: Timer1A_Handler();
-                case 2: Timer2A_Handler();
-                case 3: Timer3A_Handler();
+                case 0:
+                    Timer0A_Handler();
+                    break;
+                case 1:
+                    Timer1A_Handler();
+                    break;
+                case 2:
+                    Timer2A_Handler();
+                    break;
+                case 3:
+                    Timer3A_Handler();
+                    break;
             }
         }
     }
     // Check if a new tempo is needed
     time = Tempos[Tempo_Index+1].time;
     MIDI_Time++;
+
+    LED_Dance();
+
     if (MIDI_Time == time) {
         Tempo_Index++;
     }
