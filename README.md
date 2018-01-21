@@ -1,13 +1,15 @@
 # tm4c-audio: Making cool sounds and music on a TM4C microcontroller
 
 ## About
-This repo is based on code that I wrote starting with lab 6 ("Piano DAC") in EE 319K during spring 2017. I continued to develop this code substantially during the following weeks.
+This repo is based on code that I wrote starting with lab 6 ("Piano DAC") in EE 319K during spring 2017. I continued to develop this code substantially during the following weeks. Here is an excerpt of [YYZ by Rush](https://youtu.be/D-gO2kd01zY) being played by the microcontroller into a portable speaker.
 
 ## Hardware and Dependencies
 I'm currently developing this project on Debian 9.1, so the dependencies reflect that.
 - [Texas Instruments TM4C123GH6PM Microcontroller](http://www.ti.com/product/tm4c123gh6pm)
 - [Tiva C Series Launchpad Evaluation Board Software](http://www.ti.com/tool/sw-ek-tm4c123gxl)
-- [lm4flash](https://github.com/utzig/lm4tools) (available in Debian main repo, too)
+- [GNU ARM embedded toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) - Available in Debian main repo as `binutils-arm-none-eabi`, `gcc-arm-none-eabi`, and `gdb-arm-none-eabi`
+- [lm4flash](https://github.com/utzig/lm4tools) - Available in Debian main repo, too.
+- [openocd](https://openocd.org) - Highly recommended for on-chip debugging with gdb.
 - The circuit (see included schematics)
 
 ## How it works
